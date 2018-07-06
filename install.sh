@@ -46,7 +46,8 @@ Script settings:
 
 Installable options:
 -b  bash      Link bashrc
--e  eslint    Link eslintrc
+-e  emacs     Link emacs
+-l  eslint    Link eslintrc
 -f  fzf       Setup fzf
 -k  konsole   Link Konsole profile and colorscheme
 -n  neovim    Setup neovim and link init.vim
@@ -73,7 +74,8 @@ while getopts 'hAYNVbefknptz' flag; do
     V) verbose='true' ;;
 
     b) setup_bash='true' ;;
-    e) setup_eslint='true' ;;
+    e) setup_emacs='true' ;;
+    l) setup_eslint='true' ;;
     f) setup_fzf='true' ;;
     k) konsole_files='true' ;;
     n) setup_neovim='true' ;;
@@ -93,6 +95,7 @@ files=()
 # .Xresources
 
 [[ $setup_bash || $all ]] && files+=(.bashrc)
+[[ $setup_emacs || $all ]] && files+=(.emacs)
 [[ $setup_eslint || $all ]] && files+=(.eslintrc.json)
 [[ $setup_tmux || $all ]] && files+=(.tmux.conf)
 
