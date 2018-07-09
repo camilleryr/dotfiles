@@ -4,6 +4,10 @@
 ;; (tooltip-mode    -1)
 ;; (menu-bar-mode   -1)
 
+(global-linum-mode 1)
+
+(setq inhibit-startup-screen 1)
+
 (set-default-font "FuraCode Nerd Font 15")
 
 ;; Show matching parens
