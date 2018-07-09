@@ -34,6 +34,9 @@
   :config
   (evil-mode 1))
 
+(setq evil-split-window-below 1)
+(setq evil-split-window-right 1)
+
 ;; Theme
 (use-package doom-themes
   :ensure t
