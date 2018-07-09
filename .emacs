@@ -105,6 +105,7 @@
    "M-j"  '(windmove-down :which-key "move bottom")
    "M-="  '(balance-windows :which-key "balance windows")
    "M-z"  '(maximize-window :which-key "maximize window")
+   "<s-return>" '(eval-last-sexp :which-key "eval-last-sexp")
   )
   (general-define-key
    :states '(normal visual emacs)
