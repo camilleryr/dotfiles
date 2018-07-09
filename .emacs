@@ -38,8 +38,9 @@
   :config
   (evil-mode 1))
 
-(setq evil-split-window-below 1)
 (setq evil-split-window-right 1)
+(setq evil-split-window-below 1)
+(setq evil-auto-balance-windows nil)
 
 ;; Theme
 (use-package doom-themes
