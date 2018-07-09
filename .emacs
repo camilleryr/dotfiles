@@ -101,6 +101,11 @@
    "M-="  '(balance-windows :which-key "balance windows")
    "M-z"  '(maximize-window :which-key "maximize window")
   )
+  (general-define-key
+   :states '(normal visual emacs)
+   "j"    '(evil-next-visual-line :which-key "line down")
+   "k"    '(evil-previous-visual-line :which-key "line down")
+  )
 )
 
 (defadvice evil-search-next (after advice-for-evil-ex-search-next activate)
