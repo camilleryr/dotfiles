@@ -113,7 +113,11 @@
   )
 )
 
+;; center screen on next/previous search
 (defadvice evil-search-next (after advice-for-evil-ex-search-next activate)
+  (evil-scroll-line-to-center (line-number-at-pos)))
+
+(defadvice evil-search-previous (after advice-for-evil-ex-search-previous activate)
   (evil-scroll-line-to-center (line-number-at-pos)))
 
 ;;;; Custom keybinding
