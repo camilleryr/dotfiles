@@ -123,6 +123,10 @@
    "j"    '(evil-next-visual-line :which-key "line down")
    "k"    '(evil-previous-visual-line :which-key "line down")
   )
+  (general-define-key
+   :keymaps 'dired-mode-map
+   "-"    '(dired-up-directory :which-key "up directory")
+  )
 )
 
 ;; center screen on next/previous search
