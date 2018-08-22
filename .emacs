@@ -130,6 +130,14 @@
    "k"    '(evil-previous-visual-line :which-key "line down")
   )
   (general-define-key
+   :states '(normal emacs)
+   "gcc"    '(comment-line :which-key "comment line")
+  )
+  (general-define-key
+   :states '(visual emacs)
+   "gc"    '(comment-or-uncomment-region :which-key "comment or uncomment region")
+  )
+  (general-define-key
    :keymaps 'dired-mode-map
    "-"    '(dired-up-directory :which-key "up directory")
   )
