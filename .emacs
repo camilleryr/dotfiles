@@ -94,6 +94,11 @@
 
 ;;(defun vterm () "vertical terminal split" (interactive) (evil-window-vnew) (ansi-term "/bin/zsh"))
 
+(defun eval-last-sexp-here
+    () "eval-last-sexp with output in buffer"
+    (interactive)
+    (eval-last-sexp 1))
+
 (use-package general
   :ensure t
   :config
@@ -117,6 +122,7 @@
    "M-="  '(balance-windows :which-key "balance windows")
    "M-z"  '(maximize-window :which-key "maximize window")
    "<C-return>" '(eval-last-sexp :which-key "eval-last-sexp")
+   "<C-S-return>" '(eval-last-sexp-here :which-key "eval-last-sexp-here")
   )
   (general-define-key
    :states '(normal visual emacs)
