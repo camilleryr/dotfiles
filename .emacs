@@ -42,6 +42,11 @@
 (setq evil-split-window-below 1)
 (setq evil-auto-balance-windows nil)
 
+(use-package evil-commentary
+  :ensure t
+  :init
+  (evil-commentary-mode))
+
 ;; Theme
 (use-package doom-themes
   :ensure t
@@ -130,14 +135,6 @@
    "k"    '(evil-previous-visual-line :which-key "line down")
   )
   (general-define-key
-   :states '(normal emacs)
-   "gcc"    '(comment-line :which-key "comment line")
-  )
-  (general-define-key
-   :states '(visual emacs)
-   "gc"    '(comment-or-uncomment-region :which-key "comment or uncomment region")
-  )
-  (general-define-key
    :keymaps 'dired-mode-map
    "-"    '(dired-up-directory :which-key "up directory")
   )
@@ -184,7 +181,7 @@
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (projectile general which-key doom-themes evil use-package))))
+    (evil-commentary projectile general which-key doom-themes evil use-package))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
