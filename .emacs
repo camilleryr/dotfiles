@@ -99,6 +99,20 @@
 
 ;;(defun vterm () "vertical terminal split" (interactive) (evil-window-vnew) (ansi-term "/bin/zsh"))
 
+;; load dired for dired-jump function
+(require 'dired)
+
+(defun dired-here-horizontally
+    () "dired here other window"
+    (interactive)
+    (select-window (split-window (selected-window) nil 'right))
+    (dired-jump))
+(defun dired-here-vertically
+    () "dired here other window"
+    (interactive)
+    (select-window (split-window (selected-window) nil 'below))
+    (dired-jump))
+
 (defun eval-last-sexp-here
     () "eval-last-sexp with output in buffer"
     (interactive)
@@ -114,8 +128,8 @@
    "SPC"  '(helm-M-x :which-key "M-x")
    "q"    '(evil-quit :which-key "quit file")
    "w"    '(evil-write :which-key "write file")
-;;   "x"    '(evil-window-vnew :which-key "vertical term split")
-;;   "x"    '(vterm :which-key "vertical term split")
+   "x"    '(dired-here-horizontally :which-key "dired here horizontally")
+   "X"    '(dired-here-vertically :which-key "dired here vertically")
   )
   (general-define-key
 ;;   "K"    '(describe-function :which-key "function help")
@@ -128,14 +142,18 @@
    "M-z"  '(maximize-window :which-key "maximize window")
    "<C-return>" '(eval-last-sexp :which-key "eval-last-sexp")
    "<C-S-return>" '(eval-last-sexp-here :which-key "eval-last-sexp-here")
+   "<escape>" '(keyboard-escape-quit :which-key "quit")
   )
   (general-define-key
    :states '(normal visual emacs)
    "j"    '(evil-next-visual-line :which-key "line down")
    "k"    '(evil-previous-visual-line :which-key "line down")
+   "-"    '(dired-up-directory :which-key "up directory")
   )
   (general-define-key
    :keymaps 'dired-mode-map
+   "q" nil
+   "SPC" nil
    "-"    '(dired-up-directory :which-key "up directory")
   )
 )
