@@ -165,6 +165,15 @@
 (defadvice evil-search-previous (after advice-for-evil-ex-search-previous activate)
   (evil-scroll-line-to-center (line-number-at-pos)))
 
+;; prevent keyboard-escape-quit destroying other window - https://stackoverflow.com/a/558467
+(defadvice keyboard-escape-quit (around my-keyboard-escape-quit activate)
+  (let (orig-one-window-p)
+    (fset 'orig-one-window-p (symbol-function 'one-window-p))
+    (fset 'one-window-p (lambda (&optional nomini all-frames) t))
+    (unwind-protect
+        ad-do-it
+      (fset 'one-window-p (symbol-function 'orig-one-window-p)))))
+
 ;;;; Custom keybinding
 ;;(use-package general
 ;;  :ensure t
