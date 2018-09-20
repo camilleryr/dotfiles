@@ -156,6 +156,11 @@
    "SPC" nil
    "-"    '(dired-up-directory :which-key "up directory")
   )
+  (general-define-key
+   :states 'motion
+   ;; swap ; and :
+   ";" 'evil-ex
+   ":" 'evil-repeat-find-char)
 )
 
 ;; center screen on next/previous search
