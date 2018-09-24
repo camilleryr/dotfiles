@@ -18,6 +18,8 @@
 (setq make-backup-files nil) ; stop creating backup~ files
 (setq auto-save-default nil) ; stop creating #autosave# files
 
+(setq vc-follow-symlinks t)
+
 ;; Package configs
 (require 'package)
 (setq package-enable-at-startup nil)
