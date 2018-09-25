@@ -4,7 +4,7 @@
 (tooltip-mode    -1)
 (menu-bar-mode   -1)
 
-(global-linum-mode 1)
+(global-display-line-numbers-mode t)
 
 (setq inhibit-startup-screen 1)
 
