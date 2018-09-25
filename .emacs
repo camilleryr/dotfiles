@@ -24,6 +24,10 @@
 
 (setq vc-follow-symlinks t)
 
+(setq ediff-split-window-function 'split-window-horizontally)
+(setq ediff-window-setup-function 'ediff-setup-windows-plain)
+(add-hook 'ediff-after-quit-hook-internal 'winner-undo) ; restore windows
+
 ;; Package configs
 (require 'package)
 (setq package-enable-at-startup nil)
@@ -102,6 +106,17 @@
   (setq which-key-prefix-prefix "+")
   :config
   (which-key-mode 1))
+
+(use-package magit
+  :ensure t)
+
+(use-package evil-magit
+  :ensure t)
+
+(use-package git-gutter
+  :ensure t
+  :init
+  (global-git-gutter-mode 1))
 
 ;;(defun vterm () "vertical terminal split" (interactive) (evil-window-vnew) (ansi-term "/bin/zsh"))
 
