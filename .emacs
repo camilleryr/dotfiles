@@ -5,6 +5,7 @@
 (menu-bar-mode   -1)
 
 (global-display-line-numbers-mode t)
+(global-hl-line-mode t)
 
 (setq inhibit-startup-screen 1)
 
