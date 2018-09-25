@@ -18,6 +18,10 @@
 (setq make-backup-files nil) ; stop creating backup~ files
 (setq auto-save-default nil) ; stop creating #autosave# files
 
+;; Save undo tree history
+(setq undo-tree-auto-save-history t)
+(setq undo-tree-history-directory-alist '(("." . "~/.emacs.d/undo")))
+
 (setq vc-follow-symlinks t)
 
 ;; Package configs
