@@ -63,6 +63,11 @@
   :config
   (load-theme 'doom-one t))
 
+(use-package telephone-line
+  :ensure t
+  :init
+  (telephone-line-mode 1))
+
 ;; Fancy titlebar for MacOS
 (add-to-list 'default-frame-alist '(ns-transparent-titlebar . t))
 (add-to-list 'default-frame-alist '(ns-appearance . dark))
@@ -240,4 +245,6 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- )
+ '(telephone-line-evil-insert ((t (:inherit telephone-line-evil :background "gray95" :foreground "blue3"))))
+ '(telephone-line-evil-normal ((t (:inherit telephone-line-evil :background "OliveDrab2" :foreground "dark green"))))
+ '(telephone-line-evil-replace ((t (:inherit telephone-line-evil :background "red3" :foreground "gray95")))))
