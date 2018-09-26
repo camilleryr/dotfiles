@@ -180,12 +180,13 @@
    :states '(normal visual emacs)
    "j"    '(evil-next-visual-line :which-key "line down")
    "k"    '(evil-previous-visual-line :which-key "line down")
-   "-"    '(dired-up-directory :which-key "up directory")
+   "-"    '(dired-jump :which-key "dired")
   )
   (general-define-key
    :keymaps 'dired-mode-map
    "q" nil
    "SPC" nil
+   "C-o" nil
    "-"    '(dired-up-directory :which-key "up directory")
   )
   (general-define-key
