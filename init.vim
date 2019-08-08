@@ -1,5 +1,4 @@
 scriptencoding utf-8
-
 " install plug if not found {{{1
 if empty(glob('~/.config/nvim/autoload/plug.vim'))
   silent !curl -fLo ~/.config/nvim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
@@ -16,22 +15,16 @@ Plug 'simnalamburt/vim-mundo'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
 Plug 'tpope/vim-fugitive'
-Plug 'w0rp/ale'
-Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 
 Plug 'sheerun/vim-polyglot'
-Plug 'autozimu/LanguageClient-neovim', { 'branch': 'next', 'do': 'bash install.sh' }
 Plug 'exu/pgsql.vim'
-Plug 'ternjs/tern_for_vim', { 'do': 'npm install -g tern', 'for': ['javascript', 'javascript.jsx'] }
-Plug 'carlitux/deoplete-ternjs', { 'for': ['javascript', 'javascript.jsx'] }
-Plug 'zchee/deoplete-jedi', { 'for': 'python' }
-Plug 'Shougo/neco-syntax'
 Plug 'Shougo/neco-vim'
-Plug 'zchee/deoplete-zsh'
-Plug 'tpope/vim-projectionist'
-Plug 'c-brenn/phoenix.vim', { 'for': 'elixir' }
 Plug 'vim-scripts/ingo-library'
 Plug 'vim-scripts/SyntaxRange'
+
+Plug 'neoclide/jsonc.vim'
+Plug 'neoclide/coc-neco'
+Plug 'neoclide/coc.nvim', {'tag': '*', 'do': { -> coc#util#install()}}
 
 Plug 'kana/vim-textobj-user'
 Plug 'kana/vim-textobj-entire'      "ae/ie for entire file
@@ -47,7 +40,6 @@ Plug 'thinca/vim-quickrun'
 Plug 'tpope/vim-dispatch'
 Plug 'radenling/vim-dispatch-neovim'
 Plug 'vim-scripts/dbext.vim'
-Plug 'vimwiki/vimwiki', { 'branch': 'dev' }
 Plug 'suan/vim-instant-markdown', { 'do': 'npm install -g instant-markdown-d' }
 Plug 'chrisbra/csv.vim'
 Plug 'junegunn/vim-peekaboo'
@@ -55,7 +47,7 @@ Plug 'junegunn/vim-peekaboo'
 Plug 'itchyny/lightline.vim'
 Plug 'airblade/vim-gitgutter'
 Plug 'nathanaelkane/vim-indent-guides'
-Plug 'systemmonkey42/vim-coloresque'
+" Plug 'systemmonkey42/vim-coloresque'
 Plug 'guns/xterm-color-table.vim'
 Plug 'vim-scripts/AnsiEsc.vim'
 Plug 'ryanoasis/vim-devicons'
@@ -75,19 +67,45 @@ Plug 'tpope/vim-endwise'
 Plug 'tpope/vim-vinegar'
 Plug 'tpope/vim-rsi'
 Plug 'SirVer/ultisnips'
-Plug 'honza/vim-snippets'
 Plug 'tpope/vim-dadbod'
 
 Plug 'aoswalt/onedark.vim'
+Plug 'markvincze/panda-vim'
 Plug 'w0ng/vim-hybrid'
 
 Plug 'wannesm/wmgraphviz.vim'
 
+Plug 'junegunn/limelight.vim'
+
 " ctags require https://github.com/universal-ctags/ctags
-Plug 'ludovicchabant/vim-gutentags', {'do': ':call plug#helptags()'}
 Plug 'majutsushi/tagbar'
+Plug 'scrooloose/nerdtree'
+Plug 'ryanoasis/vim-devicons'
+Plug 'Xuyuanp/nerdtree-git-plugin'
+Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
+Plug 'rizzatti/dash.vim'
+Plug 'jeffkreeftmeijer/vim-numbertoggle'
+Plug 'stefandtw/quickfix-reflector.vim'
+
+Plug 'diepm/vim-rest-console'
+
+Plug 'neoclide/coc.nvim', {'tag': '*', 'do': { -> coc#util#install()}}
+Plug 'neoclide/coc.nvim', {'tag': '*', 'do': 'yarn install'}
 call plug#end()
 
+let s:coc_extensions = [
+\   'coc-css',
+\   'coc-html',
+\   'coc-json',
+\   'coc-eslint',
+\   'coc-prettier',
+\   'coc-tsserver',
+\   'coc-ultisnips'
+\ ]
+
+ if exists('*coc#add_extension')
+  call call('coc#add_extension', s:coc_extensions)
+endif
 
 " vim settings {{{1
 set noswapfile
@@ -128,12 +146,11 @@ set noshowmode      "do not show mode since using lightline
 set listchars+=extends:»
 set listchars+=precedes:«
 set listchars+=nbsp:⣿
-" more solid vertical bar
-set fillchars=vert:\│
+set tw=79
 
 set completeopt=longest,menuone
 
-let g:mapleader = ' ' "use space as leader
+let g:mapleader = ',' "remapped comma to leader
 
 if isdirectory($HOME . '/.config/nvim/undo') == 0
   :silent !mkdir -p ~/.config/nvim/undo > /dev/null 2>&1
@@ -150,18 +167,158 @@ endif
 let $FZF_DEFAULT_OPTS .= ' --no-height'
 
 
+" ---------------
+" Regular Mappings
+" ---------------
+
+" Use ; for : in normal and visual mode, less keystrokes
+nnoremap ; :
+vnoremap ; :
+
+" Yank entire buffer with gy
+nnoremap gy :0,$ y<cr>
+
+" Just to beginning and end of lines easier. From http://vimbits.com/bits/16
+noremap H ^
+noremap L $
+
+" Create newlines without entering insert mode
+nnoremap go o<Esc>k
+nnoremap gO O<Esc>j
+
+" remap U to <C-r> for easier redo
+" from http://vimbits.com/bits/356
+nnoremap U <C-r>
+
+" ---------------
+" Window Movement
+" ---------------
+nnoremap <silent> gh :wincmd h<CR>
+nnoremap <silent> gj :wincmd j<CR>
+nnoremap <silent> gk :wincmd k<CR>
+nnoremap <silent> gl :wincmd l<CR>
+
+"   4 Window Splits
+"
+"   -----------------
+"   g1 | g2 | g3 | g4
+"   -----------------
+nnoremap <silent> g1 :WriteBufferIfNecessary<CR>:wincmd t<CR>
+nnoremap <silent> g2 :WriteBufferIfNecessary<CR>:wincmd t<bar>:wincmd l<CR>
+nnoremap <silent> g3 :WriteBufferIfNecessary<CR>:wincmd t<bar>:wincmd l<bar>
+      \:wincmd l<CR>
+nnoremap <silent> g4 :WriteBufferIfNecessary<CR>:wincmd b<CR>
+
+" Equal Size Windows
+nnoremap <silent> g= :wincmd =<CR>
+" Swap Windows
+nnoremap <silent> gx :wincmd x<CR>
+
+function! WriteBufferIfNecessary()
+  if &modified && !&readonly
+    :write
+  endif
+endfunction
+command! WriteBufferIfNecessary call WriteBufferIfNecessary()
+
+" ---------------
+" Modifer Mappings
+" ---------------
+
+" Make line completion easier.
+inoremap <C-l> <C-x><C-l>
+
+" Scroll larger amounts with
+nnoremap <C-j> 15gjzz
+nnoremap <C-k> 15gkzz
+vnoremap <C-j> 15gjzz
+vnoremap <C-k> 15gkzz
+
+" ---------------
+" Insert Mode Mappings
+" ---------------
+
+" Move lines or blocks of text up or down
+nnoremap <m-j> :m .+1<CR>==
+nnoremap <m-k> :m .-2<CR>==
+inoremap <m-j> <ESC>:m .+1<CR>==
+inoremap <m-k> <ESC>:m .-2<CR>==
+vnoremap <m-j> :m '>+1<CR>gv=gv
+vnoremap <m-k> :m '<-2<CR>gv=gv
+
+
+" Let's make escape better, together.
+inoremap jk <Esc>
+inoremap JK <Esc>
+inoremap Jk <Esc>
+inoremap jK <Esc>
+
+" ---------------
+" Leader Mappings
+" ---------------
+
+" Highlight search word under cursor without jumping to next
+nnoremap <leader>h *<C-O>
+
+" Toggle spelling mode
+nnoremap <silent> <leader>sp :set spell!<CR>
+
+" Quickly switch to last buffer
+nnoremap <leader>, :e#<CR>
+
+" Split window vertically or horizontally *and* switch to the new split!
+nnoremap <silent> <leader>hs :split<Bar>:wincmd j<CR>:wincmd =<CR>
+nnoremap <silent> <leader>vs :vsplit<Bar>:wincmd l<CR>:wincmd =<CR>
+
+nnoremap <C-y> "*y
+vnoremap <C-y> "*y
+
+nnoremap gev :e $MYVIMRC<CR>
+nnoremap gsv :so $MYVIMRC<CR>
+
+noremap <Up> <NOP>
+noremap <Down> <NOP>
+noremap <Left> <NOP>
+noremap <Right> <NOP>
+
+nnoremap <leader>r :%s/
+vnoremap <leader>r :s/
+
+vnoremap // y/<C-R>"<CR>
+
+nnoremap <leader>l :Limelight!!<CR>
+" nmap <Leader>L <Plug>(Limelight)
+" xmap <Leader>L <Plug>(Limelight)
+
+" Color name (:help cterm-colors) or ANSI code
+let g:limelight_conceal_ctermfg = 'gray'
+let g:limelight_conceal_ctermfg = 240
+
+" Color name (:help gui-colors) or RGB color
+let g:limelight_conceal_guifg = 'DarkGray'
+let g:limelight_conceal_guifg = '#777777'
+
+" Default: 0.5
+let g:limelight_default_coefficient = 0.7
+
+" Number of preceding/following paragraphs to include (default: 0)
+let g:limelight_paragraph_span = 1
+
+" Highlighting priority (default: 10)
+"   Set it to -1 not to overrule hlsearch
+let g:limelight_priority = -1
+
+if has ('autocmd') " Remain compatible with earlier versions
+ augroup vimrc     " Source vim configuration upon save
+    autocmd! BufWritePost $MYVIMRC source % | echom "Reloaded " . $MYVIMRC | redraw
+    autocmd! BufWritePost $MYGVIMRC if has('gui_running') | so % | echom "Reloaded " . $MYGVIMRC | endif | redraw
+  augroup END
+endif " has autocmd
 
 " plugin settings {{{1
 let g:netrw_altfile = 1   "allow <c-6> to go to the previously edited file
 let g:netrw_preview = 1   "open preview window in a vertical split
 let g:netrw_localrmdir="rm -r"  "allow deleting non-empty directories
-
-let g:ale_linters = {}
-let g:ale_linters.javascript = ['eslint']
-
-let g:ale_fixers = {}
-let g:ale_fixers.javascript = ['eslint']
-let g:ale_fixers.elixir = ['mix_format']
 
 let g:indent_guides_auto_colors = 0
 let g:indent_guides_enable_on_vim_startup = 1
@@ -178,27 +335,7 @@ let g:surround_{char2nr('=')} = "<%= \r %>"
 
 let g:vim_textobj_elixir_mapping = 'E'
 
-let g:tern_show_signature_in_pum = 1
-let g:tern#filetypes = ['javascript', 'jsx', 'javascript.jsx']
-let g:tern#command = ['tern']
-let g:tern#arguments = ['--persistent']
-let g:deoplete#sources#ternjs#types = 1
-let g:deoplete#sources#ternjs#case_insensitive = 1
-let g:deoplete#sources#ternjs#include_keywords = 1
-
-let g:LanguageClient_serverCommands = {
-\ 'javascript': ['javascript-typescript-stdio'],
-\ 'jsx': ['javascript-typescript-stdio'],
-\ 'javascript.jsx': ['javascript-typescript-stdio'],
-\ 'elixir': ['elixir-ls'],
-\ }
-let g:LanguageClient_diagnosticsList = 'Location'
-
 let g:tmux_navigator_no_mappings = 1
-
-let g:deoplete#enable_at_startup = 1
-let g:deoplete#min_pattern_length = 1
-let g:deoplete#auto_complete_delay = 1
 
 let g:delimitMate_expand_cr = 1
 let g:delimitMate_expand_space = 1
@@ -207,17 +344,17 @@ let g:gutentags_cache_dir = '~/.tags_cache'
 
 let b:csv_arrange_use_all_rows = 1
 
+let g:instant_markdown_autostart = 0
+
 let g:quickrun_config = {}
 let g:quickrun_config['javascript.jsx'] = { 'type': 'javascript' }
 let g:quickrun_config['sh'] = { 'type': 'bash' }
 
 let g:sql_type_default = 'pgsql'
 
-let g:vimwiki_list = [{'syntax': 'markdown', 'ext': '.md'}]
-
 let g:UltiSnipsEditSplit = 'horizontal'
 
-
+let g:fzf_commands_expect = 'enter,ctrl-x'
 
 " autocommands {{{1
 augroup whitespace
@@ -237,10 +374,10 @@ augroup end
 
 " switch to current file's parent directory
 " set autochdir was causing issues with some plugins but needs reinvestigating
-augroup vimrc_set_working_dir
-  au!
-  autocmd BufRead,BufEnter * silent! lcd %:p:h
-augroup end
+" augroup vimrc_set_working_dir
+"   au!
+"   autocmd BufRead,BufEnter * silent! lcd %:p:h
+" augroup end
 
 " only show cursor line one active window
 augroup cursorLine
@@ -270,7 +407,7 @@ augroup term_insert
   autocmd BufLeave term://* stopinsert
 augroup end
 
-
+autocmd CursorHoldI,CursorMovedI * call CocAction('showSignatureHelp')
 
 " colors {{{1
 colorscheme onedark
@@ -288,6 +425,13 @@ highlight! TermCursorNC ctermbg=0 ctermfg=15
 
 highlight Pmenu ctermbg=240
 highlight PmenuSel ctermbg=25
+
+" highlight line 80 and 120+
+highlight ColorColumn ctermbg=232
+let &colorcolumn="80,".join(range(120,999),",")
+
+ "blacklist some files for line length markers
+autocmd FileType markdown let &colorcolumn=""
 
 " lighten non-active windows
 highlight NormalNC ctermbg=234
@@ -308,25 +452,23 @@ cnoremap s/ s/\v
 " move cursor into wrapped lines
 nnoremap k gk
 nnoremap j gj
-nnoremap <Up> gk
-nnoremap <Down> gj
 
 " warning mappings lke unimpaired
-nmap <silent> [W <Plug>(ale_first)
-nmap <silent> [w <Plug>(ale_previous)
-nmap <silent> ]w <Plug>(ale_next)
-nmap <silent> ]W <Plug>(ale_last)
+nmap <silent> [W <Plug>(coc-diagnostic-first)
+nmap <silent> [w <Plug>(coc-diagnostic-previous)
+nmap <silent> ]w <Plug>(coc-diagnostic-next)
+nmap <silent> ]W <Plug>(coc-diagnostic-last)
 
 " split navigation
-nnoremap <silent> <m-h> :TmuxNavigateLeft<cr>
-nnoremap <silent> <m-j> :TmuxNavigateDown<cr>
-nnoremap <silent> <m-k> :TmuxNavigateUp<cr>
-nnoremap <silent> <m-l> :TmuxNavigateRight<cr>
-nnoremap <silent> <m-\> :TmuxNavigatePrevious<cr>
-inoremap <m-h> <esc>:TmuxNavigateLeft<cr>
-inoremap <m-j> <esc>:TmuxNavigateDown<cr>
-inoremap <m-k> <esc>:TmuxNavigateUp<cr>
-inoremap <m-l> <esc>:TmuxNavigateRight<cr>
+nnoremap <silent> <c-m-h> :TmuxNavigateLeft<cr>
+nnoremap <silent> <c-m-j> :TmuxNavigateDown<cr>
+nnoremap <silent> <c-m-k> :TmuxNavigateUp<cr>
+nnoremap <silent> <c-m-l> :TmuxNavigateRight<cr>
+nnoremap <silent> <c-m-\> :TmuxNavigatePrevious<cr>
+inoremap <c-m-h> <esc>:TmuxNavigateLeft<cr>
+inoremap <c-m-j> <esc>:TmuxNavigateDown<cr>
+inoremap <c-m-k> <esc>:TmuxNavigateUp<cr>
+inoremap <c-m-l> <esc>:TmuxNavigateRight<cr>
 
 " terminal keybindings
 tnoremap <leader><esc> <c-\><c-n>
@@ -385,7 +527,7 @@ nnoremap <leader>f :GFiles -co --exclude-per-directory=.gitignore<CR>
 nnoremap <leader>F :FZF<CR>
 
 " super search
-nnoremap <leader>/ :Ag<space>
+nnoremap <leader>/ :Rg<space>
 nnoremap <leader>? :BLines<space>
 
 " buffer management
@@ -400,7 +542,7 @@ nnoremap <leader>q :q<cr>
 nnoremap <leader>Q :bd<cr>
 
 " search for word under cursor with <leader>*
-nnoremap <leader>* :Ag <c-r><c-w><CR>
+nnoremap <leader>* :Rg <c-r><c-w><CR>
 
 " system clipboard yank
 nnoremap <leader>y "+y
@@ -429,6 +571,15 @@ vnoremap <leader>d :<c-u>execute ':Dispatch ' . substitute(b:dispatch, '%', shel
 xnoremap * :<C-u>call <SID>VSetSearch('/')<CR>/<C-R>=@/<CR><CR>
 xnoremap # :<C-u>call <SID>VSetSearch('?')<CR>/<C-R>=@/<CR><CR>
 
+" format
+nmap <F4> <plug>(coc-format)
+
+" run fixer
+nmap <F6> <plug>(coc-fix-current)
+
+" full info
+nmap <F10> <plug>(coc-diagnostic-info)
+
 " pane toggles
 nnoremap <F5> :MundoToggle<CR>
 nnoremap <F8> :TagbarToggle<CR>
@@ -443,7 +594,7 @@ nnoremap <leader>sf :source %<CR>
 nnoremap <leader>s :mksession<CR>
 
 " term splits like tmux
-nnoremap <leader>\ :VTerm<CR>
+noremap <leader>\ :VTerm<CR>
 nnoremap <leader>- :STerm<CR>
 nnoremap <leader>\| :VTermRepo<CR>
 nnoremap <leader>_ :STermRepo<CR>
@@ -462,10 +613,20 @@ xnoremap Q :normal @q<CR>
 " port 8090
 nnoremap <leader>md :InstantMarkdownPreview<CR>
 
-nnoremap <silent> K :call LanguageClient#textDocument_hover()<CR>
-nnoremap <silent> gd :call LanguageClient#textDocument_definition()<CR>
-nnoremap <silent> <F2> :call LanguageClient#textDocument_rename()<CR>
+fun! MapLCKeys()
+  " Don't map for built-in ones
+  if &ft =~ 'vim\|help\|shell'
+    return
+  endif
 
+  nmap <buffer> <F3> <plug>(coc-rename)
+  nnoremap <buffer> <silent> K :call CocAction('doHover')<CR>
+  nmap <buffer> gd <plug>(coc-definition)
+  nmap <buffer> gy <plug>(coc-type-definition)
+
+endfun
+
+autocmd FileType * call MapLCKeys()
 
 " commands {{{1
 " close all other buffers
@@ -478,25 +639,92 @@ command! SynStack :call SynStack()
 command! -nargs=* VTerm :vsp
   \ | execute 'terminal' <args>
 command! -nargs=* VTermRepo :vsp
-  \ | execute 'lcd' fnameescape(s:get_git_root())
+  \ fnameescape(FugitiveWorkTree())
+  \ | execute 'lcd' fnameescape(FugitiveWorkTree())
   \ | execute 'terminal' <args>
 command! -nargs=* STerm :sp
   \ | execute 'terminal' <args>
 command! -nargs=* STermRepo :sp
-  \ | execute 'lcd' fnameescape(s:get_git_root())
+  \ fnameescape(FugitiveWorkTree())
+  \ | execute 'lcd' fnameescape(FugitiveWorkTree())
   \ | execute 'terminal' <args>
 command! -nargs=* TTerm :tabnew
   \ | execute 'terminal' <args>
-command! -nargs=* TTermRepo :tabnew
-  \ | execute 'lcd' fnameescape(s:get_git_root())
+command! -nargs=* TTermRepo :tabedit
+  \ fnameescape(FugitiveWorkTree())
+  \ | execute 'lcd' fnameescape(FugitiveWorkTree())
   \ | execute 'terminal' <args>
 
-" amend without editing commit message
-command! Gamend Gcommit --amend --no-edit
+imap <c-x><c-k> <plug>(fzf-complete-word)
+imap <c-x><c-f> <plug>(fzf-complete-path)
+imap <c-x><c-j> <plug>(fzf-complete-file-ag)
+imap <c-x><c-l> <plug>(fzf-complete-line)
+
+" fugitive bindings
+nnoremap <leader>gs :Gstatus<cr>
+nnoremap <leader>ga :Gwrite<cr>
+nnoremap <leader>gc :Gcommit -v<cr>
+nnoremap <leader>gd :Gdiff<cr>
+nnoremap <leader>gl :Git log<cr>
+nnoremap <leader>gL :Git log -p<cr>
+nnoremap <leader>gr :Grebase -i --autosquash
 
 command! -range FormatJSON :<line1>,<line2>call FormatJSON()
 
+command! -nargs=* Gpc execute('Gpush --set-upstream origin '.FugitiveHead().' '.<q-args>)
 
+"NERDTree Config
+nnoremap <silent><leader>nn :NERDTreeToggle<CR>:wincmd =<CR>
+nnoremap <silent><leader>nf :NERDTreeFind<CR>:wincmd =<CR>
+let g:NERDTreeShowBookmarks = 1
+let g:NERDTreeChDirMode = 1
+let g:NERDTreeMinimalUI = 1
+let g:NERDTreeHighlightCursorline = 0
+
+" Close Vim if NERDTree is the last buffer
+autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTreeType")
+  \&& b:NERDTreeType == "primary") | q | endif
+
+autocmd FileType nerdtree setlocal nocursorline
+
+let g:WebDevIconsNerdTreeAfterGlyphPadding = ' '
+let g:WebDevIconsNerdTreeGitPlugForceVAlign = ''
+
+let g:NERDTreeFileExtensionHighlightFullName = 1
+
+"YouCompleteMe
+"let g:ycm_complete_in_comments = 1
+let g:ycm_seed_identifiers_with_syntax = 1
+let g:ycm_collect_identifiers_from_comments_and_strings = 1
+let g:ycm_use_ultisnips_completer = 1
+let g:ycm_filetype_specific_completion_to_disable = {
+    \ 'ruby' : 1,
+    \}
+
+let g:ycm_semantic_triggers =  {
+  \   'cs,java,javascript,typescript,d,python,perl6,scala,vb,elixir,go' : ['.'],
+  \   'ruby' : ['.', '::'],
+  \   'gitcommit' : ['#', ':'],
+  \ }
+
+
+" Overwritten so we can allow markdown completion.
+let g:ycm_filetype_blacklist = {
+  \ 'notes': 1,
+  \ 'unite': 1,
+  \ 'tagbar': 1,
+  \ 'pandoc': 1,
+  \ 'qf': 1,
+  \ 'vimwiki': 1,
+  \ 'text': 1,
+  \ 'infolog': 1,
+  \ 'mail': 1
+\}
+
+" quickfix-reflector
+let g:qf_modifiable = 1
+let g:qf_join_changes = 1
+let g:qf_write_changes = 1
 
 " functions {{{1
 function! MaximizeWindow()
@@ -515,22 +743,17 @@ function! ZoomToggle()
   endif
 endfunction
 
-" extracted from inside fzf
-function! s:get_git_root()
-  try
-    return fugitive#repo().tree()
-  catch
-    return ''
-  endtry
-endfunction
+" override Ag and Rg commands to search inside git repo
+command! -bang -nargs=* Ag
+\ call fzf#vim#ag(<q-args>, {'dir': FugitiveWorkTree()}, <bang>0)
 
-" override Ag command to search inside git repo
-function! fzf#vim#ag_raw(command_suffix, ...)
-  return call('fzf#vim#grep', extend(['ag --nogroup --column --color '.a:command_suffix.' '.s:get_git_root(), 1], a:000))
-endfunction
-
-" from issue, but doesn't work at all in non-repo
-"command! -bang -nargs=* GitAg\ call fzf#vim#ag(<q-args>, {'dir': systemlist('git rev-parse --show-toplevel')[0]}, <bang>0)
+command! -bang -nargs=* Rg
+\ call fzf#vim#grep(
+    \ "rg --column --line-number --no-heading --color=always --smart-case ".shellescape(<q-args>),
+    \ 1,
+    \ {'dir': FugitiveWorkTree()},
+    \ <bang>0
+  \ )
 
 " run macro on selection
 function! g:ExecuteMacroOverVisualRange()
@@ -592,8 +815,12 @@ let g:lightline = {
 \   'component_function': {
 \     'filename': 'FilenameWithIcon',
 \     'gitversion': 'GitVersion',
+\     'cocstatus': 'coc#status',
 \   },
 \   'active': {
+\     'middle': [
+\        [ 'cocstatus' ],
+\     ],
 \     'right': [
 \        [ 'lineinfo'],
 \        [ 'gitversion', 'percent' ],

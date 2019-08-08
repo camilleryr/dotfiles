@@ -47,6 +47,9 @@ alias giaa='gia -A'
 alias gfp='git fetch --prune'
 alias gzb='gco $(gbL | fzf | cut -d " " -f 3)'
 alias gbdr='git push origin --delete'
+alias gs='git status'
+alias gd='git dif'
+alias ga='git add .'
 
 neoterm() {
   nvim +"terminal $*"
@@ -173,3 +176,6 @@ fi
 
 ## load local zshrc
 [ -f $HOME/.zshrc.after ] && source $HOME/.zshrc.after
+
+export VAULT_PROD="s.gxJgPSl82UoG4aKIyCAut7Jo"
+export VAULT_STAGING="s.1M0RdegMiUOR19wUOojVzlk9"
