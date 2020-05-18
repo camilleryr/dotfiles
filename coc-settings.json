@@ -13,6 +13,7 @@
       "command": "bash-language-server",
       "filetypes": ["sh"],
       "args": ["start"]
-    }
-  }
+    },
+  },
+  "tsserver.log": "verbose",
 }

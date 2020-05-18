@@ -22,9 +22,10 @@ Plug 'Shougo/neco-vim'
 Plug 'vim-scripts/ingo-library'
 Plug 'vim-scripts/SyntaxRange'
 
+Plug 'w0rp/ale'
 Plug 'neoclide/jsonc.vim'
 Plug 'neoclide/coc-neco'
-Plug 'neoclide/coc.nvim', {'tag': '*', 'do': { -> coc#util#install()}}
+Plug 'neoclide/coc.nvim'
 
 Plug 'kana/vim-textobj-user'
 Plug 'kana/vim-textobj-entire'      "ae/ie for entire file
@@ -89,9 +90,34 @@ Plug 'stefandtw/quickfix-reflector.vim'
 
 Plug 'diepm/vim-rest-console'
 
-Plug 'neoclide/coc.nvim', {'tag': '*', 'do': { -> coc#util#install()}}
-Plug 'neoclide/coc.nvim', {'tag': '*', 'do': 'yarn install'}
+Plug 'reasonml-editor/vim-reason-plus'
+Plug 'wesQ3/vim-windowswap'
+
+Plug 'neoclide/coc.nvim', {'do': { -> coc#util#install()}}
+Plug 'neoclide/coc.nvim', {'do': 'yarn install'}
+
+Plug 'chrisbra/NrrwRgn'
+Plug 'floobits/floobits-neovim'
+
 call plug#end()
+
+let g:ale_linters = {
+\  'sql': ['sqlint'],
+\}
+
+let g:ale_fixers = {
+\  'sql': ['pgformatter'],
+\}
+
+let g:ale_sql_pgformatter_options = "
+\ --comma-start
+\ --comma-break
+\ --spaces 2
+\ --keyword-case 2
+\ --type-case 2
+\ --wrap-after 1
+\ --placeholder ':: '
+\"
 
 let s:coc_extensions = [
 \   'coc-css',
@@ -238,21 +264,6 @@ vnoremap <C-k> 15gkzz
 " Insert Mode Mappings
 " ---------------
 
-" Move lines or blocks of text up or down
-nnoremap <m-j> :m .+1<CR>==
-nnoremap <m-k> :m .-2<CR>==
-inoremap <m-j> <ESC>:m .+1<CR>==
-inoremap <m-k> <ESC>:m .-2<CR>==
-vnoremap <m-j> :m '>+1<CR>gv=gv
-vnoremap <m-k> :m '<-2<CR>gv=gv
-
-
-" Let's make escape better, together.
-inoremap jk <Esc>
-inoremap JK <Esc>
-inoremap Jk <Esc>
-inoremap jK <Esc>
-
 " ---------------
 " Leader Mappings
 " ---------------
@@ -281,10 +292,14 @@ noremap <Down> <NOP>
 noremap <Left> <NOP>
 noremap <Right> <NOP>
 
-nnoremap <leader>r :%s/
-vnoremap <leader>r :s/
+nnoremap <leader>r :%s/\v
+vnoremap <leader>r :s/\v
 
 vnoremap // y/<C-R>"<CR>
+
+nmap ghp <Plug>(GitGutterPreviewHunk)
+nmap ghs <Plug>(GitGutterStageHunk)
+nmap ghu <Plug>(GitGutterUndoHunk)
 
 nnoremap <leader>l :Limelight!!<CR>
 " nmap <Leader>L <Plug>(Limelight)
@@ -387,9 +402,10 @@ augroup cursorLine
 augroup end
 
 " use pgsql syntax inside elixir non-doc string blocks
-augroup elixirSql
+augroup elixirAdditionalSyntax
   autocmd!
   autocmd FileType elixir call SyntaxRange#Include('\s\{2,\}\"\"\"', '\"\"\"', 'pgsql', 'NonText')
+  autocmd FileType elixir call SyntaxRange#Include('calc(\"\"\"', '\"\"\"', 'javascript', 'Text')
 augroup end
 
 augroup pum
@@ -436,7 +452,13 @@ autocmd FileType markdown let &colorcolumn=""
 " lighten non-active windows
 highlight NormalNC ctermbg=234
 
+augroup elixir_colors
+  autocmd FileType elixir highlight! Identifier ctermfg=88
+augroup end
 
+augroup dadbod_output_syntax
+  autocmd BufRead *.dbout set syntax=sql
+augroup end
 
 " keymappings {{{1
 " swap ; and :
@@ -543,6 +565,7 @@ nnoremap <leader>Q :bd<cr>
 
 " search for word under cursor with <leader>*
 nnoremap <leader>* :Rg <c-r><c-w><CR>
+nnoremap <leader>& "myiW :Rg <c-r>m<CR>
 
 " system clipboard yank
 nnoremap <leader>y "+y
@@ -572,7 +595,11 @@ xnoremap * :<C-u>call <SID>VSetSearch('/')<CR>/<C-R>=@/<CR><CR>
 xnoremap # :<C-u>call <SID>VSetSearch('?')<CR>/<C-R>=@/<CR><CR>
 
 " format
-nmap <F4> <plug>(coc-format)
+augroup format
+  autocmd FileType * nmap <F4> <plug>(coc-format)
+  autocmd FileType sql nmap <buffer> <F4> <Plug>(ale_fix)
+augroup end
+
 
 " run fixer
 nmap <F6> <plug>(coc-fix-current)
@@ -606,6 +633,19 @@ onoremap <silent> aT :<c-u>execute "silent normal! ?\\v[{<][{%]\\=\\?.\rv/\\v[%}
 vnoremap <silent> aT :<c-u>execute "silent normal! ?\\v[{<][{%]\\=\\?.\rv/\\v[%}][>}]/e\r"<cr>
 
 xnoremap @ :<C-u>call ExecuteMacroOverVisualRange()<CR>
+
+" TODO(adam): use Dispatch to default these?
+autocmd FileType sql nnoremap <buffer> gss :.DB<cr>
+autocmd FileType sql nmap <buffer> <expr> gs db#op_exec()
+autocmd FileType sql vmap <buffer> <expr> gs db#op_exec()
+
+autocmd FileType sql nnoremap <buffer> <c-q><c-q> :.DB<cr>
+autocmd FileType sql nmap <buffer> <expr> <c-q> db#op_exec()
+autocmd FileType sql vmap <buffer> <expr> <c-q> db#op_exec()
+
+nnoremap <silent> <leader>S :ToggleSqlScratch<cr>
+
+nnoremap <silent> <leader>Rp :ReadPreview<cr><Paste>
 
 " run 'q' macro on selection
 xnoremap Q :normal @q<CR>
@@ -672,6 +712,10 @@ nnoremap <leader>gr :Grebase -i --autosquash
 command! -range FormatJSON :<line1>,<line2>call FormatJSON()
 
 command! -nargs=* Gpc execute('Gpush --set-upstream origin '.FugitiveHead().' '.<q-args>)
+
+command! ToggleSqlScratch :call ToggleSqlScratch(<q-mods>)
+
+command! ReadPreview call ReadPreview()
 
 "NERDTree Config
 nnoremap <silent><leader>nn :NERDTreeToggle<CR>:wincmd =<CR>
@@ -743,18 +787,32 @@ function! ZoomToggle()
   endif
 endfunction
 
-" override Ag and Rg commands to search inside git repo
+" override Ag and Rg commands to search inside git repo and add preview
 command! -bang -nargs=* Ag
-\ call fzf#vim#ag(<q-args>, {'dir': FugitiveWorkTree()}, <bang>0)
+  \ call fzf#vim#ag(<q-args>, fzf#vim#with_preview({'dir': FugitiveWorkTree()}), <bang>0)
 
 command! -bang -nargs=* Rg
-\ call fzf#vim#grep(
+  \ call fzf#vim#grep(
     \ "rg --column --line-number --no-heading --color=always --smart-case ".shellescape(<q-args>),
     \ 1,
-    \ {'dir': FugitiveWorkTree()},
+    \ fzf#vim#with_preview({'dir': FugitiveWorkTree()}),
     \ <bang>0
   \ )
 
+" override GFiles to add preview
+command! -bang -nargs=? GFiles
+    \ call fzf#vim#gitfiles(
+    \ '-co --exclude-per-directory=.gitignore',
+    \ fzf#vim#with_preview(),
+    \ <bang>0
+  \ )
+
+" use :NN {filetype} on a visual selection to open a new buffer with
+" the filetype set - when the buffer is saved it will save the changes
+" to the original file
+command! -nargs=* -bang -range -complete=filetype NN
+            \ :<line1>,<line2> call nrrwrgn#NrrwRgn('',<q-bang>)
+            \ | set filetype=<args>
 " run macro on selection
 function! g:ExecuteMacroOverVisualRange()
   echo '@'.getcmdline()
@@ -803,7 +861,41 @@ function! FormatJSON() range
   silent normal =}
 endfunction
 
+function! ToggleSqlScratch(mods)
+  let l:sql_scratch_name = get(g:, 'sql_scratch_name', '[sql_scratch]')
 
+  let l:current_tab = tabpagenr()
+  let l:page_buffers = tabpagebuflist(l:current_tab)
+  let l:page_buffer_names = map(l:page_buffers, {key, val -> bufname(val)})
+  let l:is_scratch_open = index(l:page_buffer_names, l:sql_scratch_name) > -1
+
+  if l:is_scratch_open
+    let l:scrach_window_number = bufwinnr(l:sql_scratch_name)
+    execute l:scrach_window_number.'hide'
+  else
+    let l:mods = get(a:, 'mods', 'botright')
+    execute l:mods 'new' '+setlocal\ buftype=nofile|setlocal\ bufhidden=hide|setlocal\ filetype=sql' l:sql_scratch_name
+  endif
+endfunction
+
+function! ReadPreview() abort
+  if &previewwindow     " don't do this in the preview window
+    echo "Can't read inside preview window"
+    return
+  endif
+
+  silent! wincmd P " to preview window
+
+  if &previewwindow == 0 " couldn't get to preview window
+    echo "No preview window open"
+    return
+  endif
+
+  let l:contents = getline(1, "$")
+  wincmd p      " back to old window
+
+  put =l:contents
+endfunction
 
 " statusline {{{1
 "\   'colorscheme': 'onedark',
@@ -867,10 +959,14 @@ function! GitVersion()
   return gitversion
 endfunction
 
-
-
 " after.vim loading {{{1
 " allow loading of device specific configs
 if filereadable(expand('$HOME/init.after.vim'))
   source $HOME/init.after.vim
+endif
+
+let git_path = system("git rev-parse --show-toplevel 2>/dev/null")
+let git_vimrc = substitute(git_path, '\n', '', '') . "/.vimrc"
+if !empty(glob(git_vimrc))
+    exec ":source " . git_vimrc
 endif

@@ -179,3 +179,9 @@ fi
 
 export VAULT_PROD="s.gxJgPSl82UoG4aKIyCAut7Jo"
 export VAULT_STAGING="s.1M0RdegMiUOR19wUOojVzlk9"
+
+export MANPAGER='nvim +Man'
+export PGAPPNAME=chris_miller_cli
+
+# opam configuration
+test -r /Users/cmiller/.opam/opam-init/init.zsh && . /Users/cmiller/.opam/opam-init/init.zsh > /dev/null 2> /dev/null || true
