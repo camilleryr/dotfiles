@@ -42,6 +42,7 @@ alias n='nvim'
 alias n.='nvim .'
 alias vim='nvim'
 alias v='nvim'
+alias m='nvim -c ":terminal matterhorn"'
 
 alias giaa='gia -A'
 alias gfp='git fetch --prune'
@@ -51,7 +52,18 @@ alias gs='git status'
 alias gd='git dif'
 alias ga='git add .'
 
-neoterm() {
+alias bastion='ssh -i ~/.ssh/id_rsa -L 5432:postgres.example.us-east-1.rds.amazonaws.com:5432 cmiller@bastion.prd.carebridgehealth.com'
+alias bastion_hs_agp='ssh -i ~/.ssh/id_rsa -L 3307:agp-tn-secure.cluster-ro-chjgbrpcr0vt.us-east-1.rds.amazonaws.com:3306 cmiller@bastion.prd.carebridgehealth.com'
+alias bastion_hs_agp_writer='ssh -i ~/.ssh/id_rsa -L 3307:agp-tn-secure.cluster-chjgbrpcr0vt.us-east-1.rds.amazonaws.com:3306 cmiller@bastion.prd.carebridgehealth.com'
+alias bastion_hs_uhc='ssh -i ~/.ssh/id_rsa -L 3308:uhc-tn-secure.cluster-ro-chjgbrpcr0vt.us-east-1.rds.amazonaws.com:3306 cmiller@bastion.prd.carebridgehealth.com'
+alias bastion_hs_uhc_writter='ssh -i ~/.ssh/id_rsa -L 3308:uhc-tn-secure.cluster-chjgbrpcr0vt.us-east-1.rds.amazonaws.com:3306 cmiller@bastion.prd.carebridgehealth.com'
+alias elation='ssh -i ~/.ssh/id_rsa -L 3309:carebridge-dw2.elationemr.com:3306 cmiller@bastion.prd.carebridgehealth.com'
+ #     "mysqlx://carebridge-write:ZLPErr3Q0XvYMPt3FfiIK@carebridge-dw2.elationemr.com:3306/carebridge",
+
+# alias bastion_start='ssh -f -N -M -S /temp/bastion -i ~/.ssh/id_rsa -L 5432:postgres.example.us-east-1.rds.amazonaws.com:5432 cmiller@bastion.prd.carebridgehealth.com'
+# alias bastion_stop='ssh -S /temp/bastion -0 exit cmiller@bastion.prd.carebridgehealth.com'
+
+neoterm() { \
   nvim +"terminal $*"
 }
 alias nt='neoterm'
@@ -168,8 +180,12 @@ fi
 # start terminal in tmux, reattach if exists
 # [[ $TERM != screen* ]] && [ -z $TMUX ] && { tmux attach || tmux new-session -s home; }
 
+if type brew &>/dev/null; then
+  FPATH=$(brew --prefix)/share/zsh-completions:$FPATH
 
-
+  autoload -Uz compinit
+  compinit
+fi
 
 [ $commands[setxkbmap] ] && setxkbmap -option caps:ctrl_modifier
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
@@ -183,5 +199,18 @@ export VAULT_STAGING="s.1M0RdegMiUOR19wUOojVzlk9"
 export MANPAGER='nvim +Man'
 export PGAPPNAME=chris_miller_cli
 
+export ELIXIR_EDITOR='nvr -c "sp __FILE__ | normal __LINE__gg zt"'
+# export ELIXIR_EDITOR='nvr -c "tabnew __FILE__ | normal __LINE__gg zt"'
+
 # opam configuration
 test -r /Users/cmiller/.opam/opam-init/init.zsh && . /Users/cmiller/.opam/opam-init/init.zsh > /dev/null 2> /dev/null || true
+[ -f "${GHCUP_INSTALL_BASE_PREFIX:=$HOME}/.ghcup/env" ] && source "${GHCUP_INSTALL_BASE_PREFIX:=$HOME}/.ghcup/env"
+
+export PATH="/usr/local/opt/mysql-client/bin:$PATH"
+export PATH="/usr/local/opt/postgresql@12/bin:$PATH"
+if command -v pyenv 1>/dev/null 2>&1; then
+  eval "$(pyenv init -)"
+fi
+
+# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
+[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh

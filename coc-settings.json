@@ -1,19 +1,38 @@
 {
   "languageserver": {
+    "haskell": {
+      "command": "hie-wrapper",
+      "args": ["--lsp"],
+      "rootPatterns": ["stack.yaml", "cabal.config", "package.yaml"],
+      "filetypes": ["hs", "lhs", "haskell"],
+      "initializationOptions": {
+        "languageServerHaskell": {
+          "hlintOn": true
+        }
+      }
+    },
     "dockerfile": {
       "command": "docker-langserver",
       "filetypes": ["dockerfile", "Dockerfile"],
       "args": ["--stdio"]
     },
     "elixir": {
-      "command": "elixir-ls",
-      "filetypes": ["elixir", "eelixir"]
+      "command":
+      "/Users/chris_miller/Documents/workspace/dotfiles/language/elixir-ls/release/language_server.sh",
+      "filetypes": [
+        "elixir",
+        "eelixir"
+      ]
     },
     "sh": {
       "command": "bash-language-server",
       "filetypes": ["sh"],
       "args": ["start"]
-    },
+    }
   },
   "tsserver.log": "verbose",
+  "codeLens.enable": false,
+  "coc.preferences.hoverTarget": "preview",
+  "suggest.floatEnable": false,
+  "signature.enable": false,
 }

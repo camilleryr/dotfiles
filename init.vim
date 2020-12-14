@@ -9,7 +9,7 @@ endif
 
 " plugins {{{1
 call plug#begin('~/.config/nvim/plugged')
-Plug 'christoomey/vim-tmux-navigator'
+" Plug 'christoomey/vim-tmux-navigator'
 
 Plug 'simnalamburt/vim-mundo'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
@@ -18,14 +18,11 @@ Plug 'tpope/vim-fugitive'
 
 Plug 'sheerun/vim-polyglot'
 Plug 'exu/pgsql.vim'
-Plug 'Shougo/neco-vim'
+" Plug 'Shougo/neco-vim'
 Plug 'vim-scripts/ingo-library'
 Plug 'vim-scripts/SyntaxRange'
 
 Plug 'w0rp/ale'
-Plug 'neoclide/jsonc.vim'
-Plug 'neoclide/coc-neco'
-Plug 'neoclide/coc.nvim'
 
 Plug 'kana/vim-textobj-user'
 Plug 'kana/vim-textobj-entire'      "ae/ie for entire file
@@ -37,15 +34,15 @@ Plug 'Julian/vim-textobj-variable-segment'    "av/iv for variable part
 Plug 'Chun-Yang/vim-textobj-chunk'  "ac/ic for json-ish chunk
 Plug 'whatyouhide/vim-textobj-xmlattr'  "ax/ix for xml attribute
 
-Plug 'thinca/vim-quickrun'
-Plug 'tpope/vim-dispatch'
-Plug 'radenling/vim-dispatch-neovim'
+" Plug 'thinca/vim-quickrun'
+" Plug 'tpope/vim-dispatch'
+" Plug 'radenling/vim-dispatch-neovim'
 Plug 'vim-scripts/dbext.vim'
-Plug 'suan/vim-instant-markdown', { 'do': 'npm install -g instant-markdown-d' }
+" Plug 'suan/vim-instant-markdown', { 'do': 'npm install -g instant-markdown-d' }
 Plug 'chrisbra/csv.vim'
 Plug 'junegunn/vim-peekaboo'
 
-Plug 'itchyny/lightline.vim'
+" Plug 'itchyny/lightline.vim'
 Plug 'airblade/vim-gitgutter'
 Plug 'nathanaelkane/vim-indent-guides'
 " Plug 'systemmonkey42/vim-coloresque'
@@ -62,42 +59,49 @@ Plug 'tpope/vim-unimpaired'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-abolish'
 Plug 'tpope/vim-scriptease'
-Plug 'tpope/vim-obsession'
+" Plug 'tpope/vim-obsession'
 Plug 'tpope/vim-speeddating'
 Plug 'tpope/vim-endwise'
 Plug 'tpope/vim-vinegar'
 Plug 'tpope/vim-rsi'
-Plug 'SirVer/ultisnips'
+" Plug 'SirVer/ultisnips'
 Plug 'tpope/vim-dadbod'
 
-Plug 'aoswalt/onedark.vim'
+" Plug 'aoswalt/onedark.vim'
+" Plug 'morhetz/gruvbox'
+Plug 'dracula/vim'
 Plug 'markvincze/panda-vim'
 Plug 'w0ng/vim-hybrid'
 
-Plug 'wannesm/wmgraphviz.vim'
+" Plug 'wannesm/wmgraphviz.vim'
 
-Plug 'junegunn/limelight.vim'
+" Plug 'junegunn/limelight.vim'
 
 " ctags require https://github.com/universal-ctags/ctags
-Plug 'majutsushi/tagbar'
-Plug 'scrooloose/nerdtree'
+" Plug 'majutsushi/tagbar'
 Plug 'ryanoasis/vim-devicons'
-Plug 'Xuyuanp/nerdtree-git-plugin'
-Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
 Plug 'rizzatti/dash.vim'
-Plug 'jeffkreeftmeijer/vim-numbertoggle'
+" Plug 'jeffkreeftmeijer/vim-numbertoggle'
 Plug 'stefandtw/quickfix-reflector.vim'
 
 Plug 'diepm/vim-rest-console'
 
-Plug 'reasonml-editor/vim-reason-plus'
+" Plug 'reasonml-editor/vim-reason-plus'
 Plug 'wesQ3/vim-windowswap'
 
+Plug 'neoclide/jsonc.vim'
+Plug 'neoclide/coc-neco'
 Plug 'neoclide/coc.nvim', {'do': { -> coc#util#install()}}
 Plug 'neoclide/coc.nvim', {'do': 'yarn install'}
+Plug 'antoinemadec/coc-fzf'
 
-Plug 'chrisbra/NrrwRgn'
-Plug 'floobits/floobits-neovim'
+" Plug 'chrisbra/NrrwRgn'
+
+Plug 'vim-test/vim-test'
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
+
+Plug 'elixir-editors/vim-elixir'
 
 call plug#end()
 
@@ -107,6 +111,8 @@ let g:ale_linters = {
 
 let g:ale_fixers = {
 \  'sql': ['pgformatter'],
+\  'html': ['htmlbeautifier'],
+\  'eelixir': ['htmlbeautifier'],
 \}
 
 let g:ale_sql_pgformatter_options = "
@@ -126,7 +132,6 @@ let s:coc_extensions = [
 \   'coc-eslint',
 \   'coc-prettier',
 \   'coc-tsserver',
-\   'coc-ultisnips'
 \ ]
 
  if exists('*coc#add_extension')
@@ -136,7 +141,8 @@ endif
 " vim settings {{{1
 set noswapfile
 set number          "line numbers
-set cursorline      "highlight cursorline
+set norelativenumber          "line numbers
+" set cursorline      "highlight cursorline
 set ruler           "show line/column
 set scrolloff=4     "keep more lines on screen while scrolling
 set sidescroll=1    "horizontal scroll amount
@@ -176,7 +182,7 @@ set tw=79
 
 set completeopt=longest,menuone
 
-let g:mapleader = ',' "remapped comma to leader
+let g:mapleader = ' ' "remapped comma to leader
 
 if isdirectory($HOME . '/.config/nvim/undo') == 0
   :silent !mkdir -p ~/.config/nvim/undo > /dev/null 2>&1
@@ -200,6 +206,9 @@ let $FZF_DEFAULT_OPTS .= ' --no-height'
 " Use ; for : in normal and visual mode, less keystrokes
 nnoremap ; :
 vnoremap ; :
+
+noremap ; :
+noremap : ;
 
 " Yank entire buffer with gy
 nnoremap gy :0,$ y<cr>
@@ -269,13 +278,13 @@ vnoremap <C-k> 15gkzz
 " ---------------
 
 " Highlight search word under cursor without jumping to next
-nnoremap <leader>h *<C-O>
+" nnoremap <leader>h *<C-O>
 
 " Toggle spelling mode
 nnoremap <silent> <leader>sp :set spell!<CR>
 
 " Quickly switch to last buffer
-nnoremap <leader>, :e#<CR>
+" nnoremap <leader>, :e#<CR>
 
 " Split window vertically or horizontally *and* switch to the new split!
 nnoremap <silent> <leader>hs :split<Bar>:wincmd j<CR>:wincmd =<CR>
@@ -292,36 +301,14 @@ noremap <Down> <NOP>
 noremap <Left> <NOP>
 noremap <Right> <NOP>
 
-nnoremap <leader>r :%s/\v
-vnoremap <leader>r :s/\v
+nnoremap <leader>r :%s/
+vnoremap <leader>r :s/
 
 vnoremap // y/<C-R>"<CR>
 
-nmap ghp <Plug>(GitGutterPreviewHunk)
-nmap ghs <Plug>(GitGutterStageHunk)
-nmap ghu <Plug>(GitGutterUndoHunk)
-
-nnoremap <leader>l :Limelight!!<CR>
-" nmap <Leader>L <Plug>(Limelight)
-" xmap <Leader>L <Plug>(Limelight)
-
-" Color name (:help cterm-colors) or ANSI code
-let g:limelight_conceal_ctermfg = 'gray'
-let g:limelight_conceal_ctermfg = 240
-
-" Color name (:help gui-colors) or RGB color
-let g:limelight_conceal_guifg = 'DarkGray'
-let g:limelight_conceal_guifg = '#777777'
-
-" Default: 0.5
-let g:limelight_default_coefficient = 0.7
-
-" Number of preceding/following paragraphs to include (default: 0)
-let g:limelight_paragraph_span = 1
-
-" Highlighting priority (default: 10)
-"   Set it to -1 not to overrule hlsearch
-let g:limelight_priority = -1
+" nmap ghp <Plug>(GitGutterPreviewHunk)
+" nmap ghs <Plug>(GitGutterStageHunk)
+" nmap ghu <Plug>(GitGutterUndoHunk)
 
 if has ('autocmd') " Remain compatible with earlier versions
  augroup vimrc     " Source vim configuration upon save
@@ -340,34 +327,19 @@ let g:indent_guides_enable_on_vim_startup = 1
 
 let g:highlightedyank_highlight_duration = 350
 
-let g:ultisnips_javascript = {
-\ 'semi': 'never',
-\ 'space-before-function-paren': 'never',
-\ }
-
 let g:surround_{char2nr('-')} = "<% \r %>"
 let g:surround_{char2nr('=')} = "<%= \r %>"
 
 let g:vim_textobj_elixir_mapping = 'E'
 
-let g:tmux_navigator_no_mappings = 1
-
 let g:delimitMate_expand_cr = 1
 let g:delimitMate_expand_space = 1
-
-let g:gutentags_cache_dir = '~/.tags_cache'
-
-let b:csv_arrange_use_all_rows = 1
-
-let g:instant_markdown_autostart = 0
 
 let g:quickrun_config = {}
 let g:quickrun_config['javascript.jsx'] = { 'type': 'javascript' }
 let g:quickrun_config['sh'] = { 'type': 'bash' }
 
 let g:sql_type_default = 'pgsql'
-
-let g:UltiSnipsEditSplit = 'horizontal'
 
 let g:fzf_commands_expect = 'enter,ctrl-x'
 
@@ -377,10 +349,10 @@ augroup whitespace
   autocmd BufWritePre * StripWhitespace
 augroup end
 
-augroup dispatch_commands
-  autocmd FileType sh let b:dispatch = '$SHELL %'
-  autocmd FileType dot let b:dispatch = 'dot -Tpng % -o %:r.png'
-augroup end
+" augroup dispatch_commands
+"   autocmd FileType sh let b:dispatch = '$SHELL %'
+"   autocmd FileType dot let b:dispatch = 'dot -Tpng % -o %:r.png'
+" augroup end
 
 augroup ft_match_words
   " add do/end as jumps for %
@@ -395,11 +367,17 @@ augroup end
 " augroup end
 
 " only show cursor line one active window
-augroup cursorLine
-  autocmd!
-  autocmd BufEnter * setlocal cursorline
-  autocmd BufLeave * setlocal nocursorline
-augroup end
+" augroup cursorLine
+"   autocmd!
+"   autocmd BufEnter * setlocal cursorline
+"   autocmd BufLeave * setlocal nocursorline
+" augroup end
+
+" set cursorline
+" autocmd InsertEnter * highlight CursorLine guibg=#000050 guifg=fg
+" autocmd InsertLeave * highlight CursorLine guibg=#444444 guifg=fg
+
+highlight cursorline ctermbg=black
 
 " use pgsql syntax inside elixir non-doc string blocks
 augroup elixirAdditionalSyntax
@@ -423,24 +401,28 @@ augroup term_insert
   autocmd BufLeave term://* stopinsert
 augroup end
 
-autocmd CursorHoldI,CursorMovedI * call CocAction('showSignatureHelp')
-
 " colors {{{1
-colorscheme onedark
+colorscheme dracula
 
 highlight! IndentGuidesOdd  ctermbg=233
 highlight! IndentGuidesEven ctermbg=234
 
 highlight! jsBlock ctermfg=150
 highlight! jsObjectKey ctermfg=139
-highlight! Constant ctermfg=37
 highlight! Normal ctermbg=NONE
 
 " highlight! link TermCursor Cursor
 highlight! TermCursorNC ctermbg=0 ctermfg=15
 
-highlight Pmenu ctermbg=240
-highlight PmenuSel ctermbg=25
+highlight Pmenu ctermbg=darkgray ctermfg=white
+highlight PmenuSel ctermbg=lightgray ctermfg=black
+highlight ErrorMsg guifg=black
+highlight link Constant DraculaPurple
+highlight link elixirArguments DraculaOrange
+
+highlight Comment cterm=italic gui=italic ctermfg=18
+
+highlight link elixirFunctionCall DraculaGreen
 
 " highlight line 80 and 120+
 highlight ColorColumn ctermbg=232
@@ -460,11 +442,6 @@ augroup dadbod_output_syntax
   autocmd BufRead *.dbout set syntax=sql
 augroup end
 
-" keymappings {{{1
-" swap ; and :
-noremap ; :
-noremap : ;
-
 " pretty much always want very magic searches
 nnoremap / /\v
 nnoremap ? ?\v
@@ -481,20 +458,9 @@ nmap <silent> [w <Plug>(coc-diagnostic-previous)
 nmap <silent> ]w <Plug>(coc-diagnostic-next)
 nmap <silent> ]W <Plug>(coc-diagnostic-last)
 
-" split navigation
-nnoremap <silent> <c-m-h> :TmuxNavigateLeft<cr>
-nnoremap <silent> <c-m-j> :TmuxNavigateDown<cr>
-nnoremap <silent> <c-m-k> :TmuxNavigateUp<cr>
-nnoremap <silent> <c-m-l> :TmuxNavigateRight<cr>
-nnoremap <silent> <c-m-\> :TmuxNavigatePrevious<cr>
-inoremap <c-m-h> <esc>:TmuxNavigateLeft<cr>
-inoremap <c-m-j> <esc>:TmuxNavigateDown<cr>
-inoremap <c-m-k> <esc>:TmuxNavigateUp<cr>
-inoremap <c-m-l> <esc>:TmuxNavigateRight<cr>
-
 " terminal keybindings
-tnoremap <leader><esc> <c-\><c-n>
-tnoremap <m-[> <c-\><c-n>
+au TermOpen * tnoremap <buffer> <Esc><Esc> <c-\><c-n>
+au FileType fzf tunmap <buffer> <Esc><Esc>
 tnoremap <m-h> <c-\><c-n><c-w>h
 tnoremap <m-j> <c-\><c-n><c-w>j
 tnoremap <m-k> <c-\><c-n><c-w>k
@@ -587,8 +553,8 @@ xmap # #zz
 nmap g* g*zz
 nmap g# g#zz
 
-nnoremap <leader>d :Dispatch<cr>
-vnoremap <leader>d :<c-u>execute ':Dispatch ' . substitute(b:dispatch, '%', shellescape(join(getline(line("'<"), line("'>")), "\n"), "\n"), "")<cr>
+" nnoremap <leader>d :Dispatch<cr>
+" vnoremap <leader>d :<c-u>execute ':Dispatch ' . substitute(b:dispatch, '%', shellescape(join(getline(line("'<"), line("'>")), "\n"), "\n"), "")<cr>
 
 " search for visual selection
 xnoremap * :<C-u>call <SID>VSetSearch('/')<CR>/<C-R>=@/<CR><CR>
@@ -598,8 +564,14 @@ xnoremap # :<C-u>call <SID>VSetSearch('?')<CR>/<C-R>=@/<CR><CR>
 augroup format
   autocmd FileType * nmap <F4> <plug>(coc-format)
   autocmd FileType sql nmap <buffer> <F4> <Plug>(ale_fix)
+  autocmd FileType eelixir nmap <buffer> <F4> <Plug>(ale_fix)
+  autocmd FileType html nmap <buffer> <F4> <Plug>(ale_fix)
 augroup end
 
+" augroup fzfbindings
+"   autocmd BufEnter FileType fzf tunmap <esc><esc>
+"   " autocmd BufLeave FileType fzf tnoremap <esc><esc> <c-\><c-n>
+" augroup end
 
 " run fixer
 nmap <F6> <plug>(coc-fix-current)
@@ -609,7 +581,7 @@ nmap <F10> <plug>(coc-diagnostic-info)
 
 " pane toggles
 nnoremap <F5> :MundoToggle<CR>
-nnoremap <F8> :TagbarToggle<CR>
+nnoremap <F8>  :TagbarToggle<CR>
 
 " edit vimrc/zshrc and source vimrc
 nnoremap <leader>ev :vsp $MYVIMRC<CR>
@@ -639,9 +611,9 @@ autocmd FileType sql nnoremap <buffer> gss :.DB<cr>
 autocmd FileType sql nmap <buffer> <expr> gs db#op_exec()
 autocmd FileType sql vmap <buffer> <expr> gs db#op_exec()
 
-autocmd FileType sql nnoremap <buffer> <c-q><c-q> :.DB<cr>
-autocmd FileType sql nmap <buffer> <expr> <c-q> db#op_exec()
-autocmd FileType sql vmap <buffer> <expr> <c-q> db#op_exec()
+autocmd FileType mysql nnoremap <buffer> gss :.DB<cr>
+autocmd FileType mysql nmap <buffer> <expr> gs db#op_exec()
+autocmd FileType mysql vmap <buffer> <expr> gs db#op_exec()
 
 nnoremap <silent> <leader>S :ToggleSqlScratch<cr>
 
@@ -649,9 +621,6 @@ nnoremap <silent> <leader>Rp :ReadPreview<cr><Paste>
 
 " run 'q' macro on selection
 xnoremap Q :normal @q<CR>
-
-" port 8090
-nnoremap <leader>md :InstantMarkdownPreview<CR>
 
 fun! MapLCKeys()
   " Don't map for built-in ones
@@ -661,9 +630,11 @@ fun! MapLCKeys()
 
   nmap <buffer> <F3> <plug>(coc-rename)
   nnoremap <buffer> <silent> K :call CocAction('doHover')<CR>
-  nmap <buffer> gd <plug>(coc-definition)
-  nmap <buffer> gy <plug>(coc-type-definition)
+  nnoremap <buffer> <silent> <C-w><C-k> :call CocAction('showSignatureHelp')<CR>
 
+  nmap <buffer> gd <plug>(coc-definition)
+  nmap <silent> gr <Plug>(coc-references)
+  nnoremap <silent> <leader>co  :CocList outline<CR>
 endfun
 
 autocmd FileType * call MapLCKeys()
@@ -709,6 +680,14 @@ nnoremap <leader>gl :Git log<cr>
 nnoremap <leader>gL :Git log -p<cr>
 nnoremap <leader>gr :Grebase -i --autosquash
 
+nnoremap <leader>tn :w<CR>:TestNearest<CR>
+
+nnoremap <leader>mcp :!mix compile<CR>
+nnoremap <leader>mcd :!mix credo --strict<CR>
+nnoremap <leader>mf :!mix format<CR>
+
+nnoremap <F10> :echo 'hi<' . synIDattr(synID(line('.'),col('.'),1),'name') . '> trans<' . synIDattr(synID(line('.'),col('.'),0),'name') . '> lo<' . synIDattr(synIDtrans(synID(line('.'),col('.'),1)),'name') . '>'<CR>
+
 command! -range FormatJSON :<line1>,<line2>call FormatJSON()
 
 command! -nargs=* Gpc execute('Gpush --set-upstream origin '.FugitiveHead().' '.<q-args>)
@@ -717,24 +696,8 @@ command! ToggleSqlScratch :call ToggleSqlScratch(<q-mods>)
 
 command! ReadPreview call ReadPreview()
 
-"NERDTree Config
-nnoremap <silent><leader>nn :NERDTreeToggle<CR>:wincmd =<CR>
-nnoremap <silent><leader>nf :NERDTreeFind<CR>:wincmd =<CR>
-let g:NERDTreeShowBookmarks = 1
-let g:NERDTreeChDirMode = 1
-let g:NERDTreeMinimalUI = 1
-let g:NERDTreeHighlightCursorline = 0
-
-" Close Vim if NERDTree is the last buffer
-autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTreeType")
-  \&& b:NERDTreeType == "primary") | q | endif
-
-autocmd FileType nerdtree setlocal nocursorline
-
-let g:WebDevIconsNerdTreeAfterGlyphPadding = ' '
-let g:WebDevIconsNerdTreeGitPlugForceVAlign = ''
-
-let g:NERDTreeFileExtensionHighlightFullName = 1
+" air-line
+let g:airline_powerline_fonts = 1
 
 "YouCompleteMe
 "let g:ycm_complete_in_comments = 1
@@ -897,36 +860,6 @@ function! ReadPreview() abort
   put =l:contents
 endfunction
 
-" statusline {{{1
-"\   'colorscheme': 'onedark',
-let g:lightline = {
-\   'component': {
-\     'mode': '%{lightline#mode() . " " . ObsessionStatus()}',
-\     'readonly': '%{&readonly?"\ue0a2":""}',
-\   },
-\   'component_function': {
-\     'filename': 'FilenameWithIcon',
-\     'gitversion': 'GitVersion',
-\     'cocstatus': 'coc#status',
-\   },
-\   'active': {
-\     'middle': [
-\        [ 'cocstatus' ],
-\     ],
-\     'right': [
-\        [ 'lineinfo'],
-\        [ 'gitversion', 'percent' ],
-\        [ 'fileformat', 'filetype' ],
-\     ]
-\   },
-\   'inactive': {
-\     'right': [
-\        [ 'lineinfo' ],
-\        [ 'gitversion', 'percent' ],
-\     ]
-\   },
-\ }
-
 " custom icon overrides
 let s:icons = {
 \   'jsx': "\ue7ba",
@@ -970,3 +903,4 @@ let git_vimrc = substitute(git_path, '\n', '', '') . "/.vimrc"
 if !empty(glob(git_vimrc))
     exec ":source " . git_vimrc
 endif
+
