@@ -1,38 +1,92 @@
 {
+  "elixirLS.mixEnv": "dev",
+  "elixir.trace.server": "verbose",
+  "elixir.pathToElixirLS": "/Users/LEX5591/workspace/camiller/dotfiles/language/elixir-ls/release/language_server.sh",
+  // diagnostic-languageserver
+  "diagnostic-languageserver.filetypes": {
+    "elixir": ["mix_credo", "mix_credo_compile"],
+    "eelixir": ["mix_credo", "mix_credo_compile"]
+  },
+  /* "diagnostic-languageserver.formatFiletypes": { */
+  /*   "elixir": ["mix_format", "--dot-formatter", "/Users/LEX5591/workspace/hca/waterpark-2018/.formatter"], */
+  /*   "eelixir": ["mix_format", "--dot-formatter", "/Users/LEX5591/workspace/hca/waterpark-2018/.formatter"] */
+  /* }, */
+  "diagnostic-languageserver.mergeConfig": true,
+  "diagnostic-languageserver.linters": {
+    "mix_credo": {
+      "args": ["credo", "suggest", "--format", "flycheck", "--read-from-stdin", "--config-file", "./data/.credo.exs"]
+    },
+    "mix_credo_compile": {
+      "args": ["credo", "suggest", "--format", "flycheck", "--read-from-stdin", "--config-file", "./data/.credo.exs"]
+    }
+  },
   "languageserver": {
+    "erlang": {
+      "command": "erlang_ls",
+      "filetypes": ["erlang"]
+    },
     "haskell": {
-      "command": "hie-wrapper",
+      "command": "haskell-language-server-wrapper",
       "args": ["--lsp"],
-      "rootPatterns": ["stack.yaml", "cabal.config", "package.yaml"],
-      "filetypes": ["hs", "lhs", "haskell"],
-      "initializationOptions": {
-        "languageServerHaskell": {
-          "hlintOn": true
-        }
-      }
+      "rootPatterns": ["*.cabal", "stack.yaml", "cabal.project", "package.yaml", "hie.yaml"],
+      "filetypes": ["haskell", "lhaskell"]
     },
     "dockerfile": {
       "command": "docker-langserver",
-      "filetypes": ["dockerfile", "Dockerfile"],
-      "args": ["--stdio"]
-    },
-    "elixir": {
-      "command":
-      "/Users/chris_miller/Documents/workspace/dotfiles/language/elixir-ls/release/language_server.sh",
       "filetypes": [
-        "elixir",
-        "eelixir"
+        "dockerfile",
+        "Dockerfile"
+      ],
+      "args": [
+        "--stdio"
       ]
     },
     "sh": {
       "command": "bash-language-server",
-      "filetypes": ["sh"],
-      "args": ["start"]
+      "filetypes": [
+        "sh"
+      ],
+      "args": [
+        "start"
+      ]
+    },
+    "clojure-lsp": {
+      "command": "bash",
+      "args": [
+        "-c",
+        "clojure-lsp"
+      ],
+      "filetypes": [
+        "clojure"
+      ],
+      "rootPatterns": [
+        "project.clj"
+      ],
+      "additionalSchemes": [
+        "jar",
+        "zipfile"
+      ],
+      "trace.server": "verbose",
+      "initializationOptions": {}
     }
+    /* "elixir": { */
+    /*   "command": "/Users/LEX5591/workspace/camiller/dotfiles/language/elixir-ls/release/language_server.sh", */
+    /*   "filetypes": [ */
+    /*     "elixir", */
+    /*     "eelixir" */
+    /*   ] */
+    /* }, */
   },
-  "tsserver.log": "verbose",
-  "codeLens.enable": false,
-  "coc.preferences.hoverTarget": "preview",
+  "sql.database": "transactsql",
+  "sql.formatOptions": {
+    "language": "tsql",
+    "uppercase": true,
+    "linesBetweenQueries": 2
+  },
+  "codeLens.enable": true,
   "suggest.floatEnable": false,
   "signature.enable": false,
+  "coc.preferences.formatOnType": true,
+  "coc.preferences.formatOnSaveFiletypes": ["elixir", "haskell", "lhaskell"],
+  "hover.target": "preview"
 }

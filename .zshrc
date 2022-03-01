@@ -1,3 +1,10 @@
+# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
+# Initialization code that may require console input (password prompts, [y/n]
+# confirmations, etc.) must go above this block; everything else may go below.
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+fi
+
 ## Executes commands at the start of an interactive session
 
 # fix vim not seeing 256-color terminal
@@ -38,11 +45,12 @@ alias l='ls -CF'
 alias gresolve="git diff --name-only | uniq | xargs $EDITOR"
 alias gresolvep='gresolve -p'
 alias gresolveo='gresolve -O'
-alias n='nvim'
-alias n.='nvim .'
-alias vim='nvim'
-alias v='nvim'
-alias m='nvim -c ":terminal matterhorn"'
+alias n='nvim_term'
+alias n.='nvim_term .'
+alias vim='nvim_term'
+alias v='nvim_term'
+alias nvim_term='nvim -c ":VTerm | wincmd h"'
+# alias m='nvim -c ":terminal matterhorn"'
 
 alias giaa='gia -A'
 alias gfp='git fetch --prune'
@@ -52,16 +60,7 @@ alias gs='git status'
 alias gd='git dif'
 alias ga='git add .'
 
-alias bastion='ssh -i ~/.ssh/id_rsa -L 5432:postgres.example.us-east-1.rds.amazonaws.com:5432 cmiller@bastion.prd.carebridgehealth.com'
-alias bastion_hs_agp='ssh -i ~/.ssh/id_rsa -L 3307:agp-tn-secure.cluster-ro-chjgbrpcr0vt.us-east-1.rds.amazonaws.com:3306 cmiller@bastion.prd.carebridgehealth.com'
-alias bastion_hs_agp_writer='ssh -i ~/.ssh/id_rsa -L 3307:agp-tn-secure.cluster-chjgbrpcr0vt.us-east-1.rds.amazonaws.com:3306 cmiller@bastion.prd.carebridgehealth.com'
-alias bastion_hs_uhc='ssh -i ~/.ssh/id_rsa -L 3308:uhc-tn-secure.cluster-ro-chjgbrpcr0vt.us-east-1.rds.amazonaws.com:3306 cmiller@bastion.prd.carebridgehealth.com'
-alias bastion_hs_uhc_writter='ssh -i ~/.ssh/id_rsa -L 3308:uhc-tn-secure.cluster-chjgbrpcr0vt.us-east-1.rds.amazonaws.com:3306 cmiller@bastion.prd.carebridgehealth.com'
-alias elation='ssh -i ~/.ssh/id_rsa -L 3309:carebridge-dw2.elationemr.com:3306 cmiller@bastion.prd.carebridgehealth.com'
- #     "mysqlx://carebridge-write:ZLPErr3Q0XvYMPt3FfiIK@carebridge-dw2.elationemr.com:3306/carebridge",
-
-# alias bastion_start='ssh -f -N -M -S /temp/bastion -i ~/.ssh/id_rsa -L 5432:postgres.example.us-east-1.rds.amazonaws.com:5432 cmiller@bastion.prd.carebridgehealth.com'
-# alias bastion_stop='ssh -S /temp/bastion -0 exit cmiller@bastion.prd.carebridgehealth.com'
+alias j=z
 
 neoterm() { \
   nvim +"terminal $*"
@@ -195,12 +194,18 @@ fi
 
 export VAULT_PROD="s.gxJgPSl82UoG4aKIyCAut7Jo"
 export VAULT_STAGING="s.1M0RdegMiUOR19wUOojVzlk9"
+export WATERPARK_SRC_DIR="/Users/LEX5591/workspace/hca/waterpark-2018"
 
-export MANPAGER='nvim +Man'
+export MANPAGER='vim -c MANPAGER -'
 export PGAPPNAME=chris_miller_cli
 
 export ELIXIR_EDITOR='nvr -c "sp __FILE__ | normal __LINE__gg zt"'
-# export ELIXIR_EDITOR='nvr -c "tabnew __FILE__ | normal __LINE__gg zt"'
+
+export http_proxy=http://proxy.nas.medcity.net:80
+export https_proxy=http://proxy.nas.medcity.net:80
+export HTTP_PROXY=http://proxy.nas.medcity.net:80
+export HTTPS_PROXY=http://proxy.nas.medcity.net:80
+# export no_proxy=localhost
 
 # opam configuration
 test -r /Users/cmiller/.opam/opam-init/init.zsh && . /Users/cmiller/.opam/opam-init/init.zsh > /dev/null 2> /dev/null || true
@@ -214,3 +219,14 @@ fi
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+[[ ! -f ~/.secret.zsh ]] || source ~/.secret.zsh
+
+. /usr/local/opt/asdf/asdf.sh
+. /Users/LEX5591/workspace/camiller/z/z.sh
+. ~/.asdf/plugins/java/set-java-home.zsh
+source /usr/local/opt/powerlevel10k/powerlevel10k.zsh-theme
+
+PATH="/Library/Frameworks/Python.framework/Versions/Current/bin:${PATH}"
+export PATH
+
+alias SLACK="ssh -i /Users/LEX5591/workspace/camiller/playground/wee-slack/wee-slack-gcp.pem 34.68.126.201"

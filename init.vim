@@ -15,6 +15,9 @@ Plug 'simnalamburt/vim-mundo'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
 Plug 'tpope/vim-fugitive'
+Plug 'tpope/vim-rhubarb'
+Plug 'tpope/vim-fireplace'
+" Plug 'venantius/vim-cljfmt'
 
 Plug 'sheerun/vim-polyglot'
 Plug 'exu/pgsql.vim'
@@ -22,7 +25,7 @@ Plug 'exu/pgsql.vim'
 Plug 'vim-scripts/ingo-library'
 Plug 'vim-scripts/SyntaxRange'
 
-Plug 'w0rp/ale'
+" Plug 'w0rp/ale'
 
 Plug 'kana/vim-textobj-user'
 Plug 'kana/vim-textobj-entire'      "ae/ie for entire file
@@ -34,9 +37,9 @@ Plug 'Julian/vim-textobj-variable-segment'    "av/iv for variable part
 Plug 'Chun-Yang/vim-textobj-chunk'  "ac/ic for json-ish chunk
 Plug 'whatyouhide/vim-textobj-xmlattr'  "ax/ix for xml attribute
 
-" Plug 'thinca/vim-quickrun'
-" Plug 'tpope/vim-dispatch'
-" Plug 'radenling/vim-dispatch-neovim'
+Plug 'thinca/vim-quickrun'
+Plug 'tpope/vim-dispatch'
+Plug 'radenling/vim-dispatch-neovim'
 Plug 'vim-scripts/dbext.vim'
 " Plug 'suan/vim-instant-markdown', { 'do': 'npm install -g instant-markdown-d' }
 Plug 'chrisbra/csv.vim'
@@ -92,7 +95,7 @@ Plug 'wesQ3/vim-windowswap'
 Plug 'neoclide/jsonc.vim'
 Plug 'neoclide/coc-neco'
 Plug 'neoclide/coc.nvim', {'do': { -> coc#util#install()}}
-Plug 'neoclide/coc.nvim', {'do': 'yarn install'}
+" Plug 'neoclide/coc.nvim', {'do': 'yarn install'}
 Plug 'antoinemadec/coc-fzf'
 
 " Plug 'chrisbra/NrrwRgn'
@@ -102,28 +105,36 @@ Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 
 Plug 'elixir-editors/vim-elixir'
+Plug 'vim-erlang/vim-erlang-runtime'
+Plug 'lambdalisue/vim-manpager'
+Plug 'gitrust/vim-hl7'
+
+Plug 'jpalardy/vim-slime'
+Plug 'wellle/targets.vim'
+
+Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': ['markdown', 'vim-plug']}
 
 call plug#end()
 
-let g:ale_linters = {
-\  'sql': ['sqlint'],
-\}
+" let g:ale_linters = {
+" \  'sql': ['sql-lint'],
+" \}
 
-let g:ale_fixers = {
-\  'sql': ['pgformatter'],
-\  'html': ['htmlbeautifier'],
-\  'eelixir': ['htmlbeautifier'],
-\}
+" let g:ale_fixers = {
+" \  'sql': ['sqlformat'],
+" \  'html': ['htmlbeautifier'],
+" \  'eelixir': ['htmlbeautifier'],
+" \}
 
-let g:ale_sql_pgformatter_options = "
-\ --comma-start
-\ --comma-break
-\ --spaces 2
-\ --keyword-case 2
-\ --type-case 2
-\ --wrap-after 1
-\ --placeholder ':: '
-\"
+" let g:ale_sql_pgformatter_options = "
+" \ --comma-start
+" \ --comma-break
+" \ --spaces 2
+" \ --keyword-case 2
+" \ --type-case 2
+" \ --wrap-after 1
+" \ --placeholder ':: '
+" \"
 
 let s:coc_extensions = [
 \   'coc-css',
@@ -229,9 +240,13 @@ nnoremap U <C-r>
 " Window Movement
 " ---------------
 nnoremap <silent> gh :wincmd h<CR>
+nnoremap <silent> <m-h> :wincmd h<CR>
 nnoremap <silent> gj :wincmd j<CR>
+nnoremap <silent> <m-j> :wincmd j<CR>
 nnoremap <silent> gk :wincmd k<CR>
+nnoremap <silent> <m-k> :wincmd k<CR>
 nnoremap <silent> gl :wincmd l<CR>
+nnoremap <silent> <m-l> :wincmd l<CR>
 
 "   4 Window Splits
 "
@@ -246,8 +261,6 @@ nnoremap <silent> g4 :WriteBufferIfNecessary<CR>:wincmd b<CR>
 
 " Equal Size Windows
 nnoremap <silent> g= :wincmd =<CR>
-" Swap Windows
-nnoremap <silent> gx :wincmd x<CR>
 
 function! WriteBufferIfNecessary()
   if &modified && !&readonly
@@ -290,12 +303,6 @@ nnoremap <silent> <leader>sp :set spell!<CR>
 nnoremap <silent> <leader>hs :split<Bar>:wincmd j<CR>:wincmd =<CR>
 nnoremap <silent> <leader>vs :vsplit<Bar>:wincmd l<CR>:wincmd =<CR>
 
-nnoremap <C-y> "*y
-vnoremap <C-y> "*y
-
-nnoremap gev :e $MYVIMRC<CR>
-nnoremap gsv :so $MYVIMRC<CR>
-
 noremap <Up> <NOP>
 noremap <Down> <NOP>
 noremap <Left> <NOP>
@@ -317,6 +324,8 @@ if has ('autocmd') " Remain compatible with earlier versions
   augroup END
 endif " has autocmd
 
+let g:slime_target = "neovim"
+
 " plugin settings {{{1
 let g:netrw_altfile = 1   "allow <c-6> to go to the previously edited file
 let g:netrw_preview = 1   "open preview window in a vertical split
@@ -329,6 +338,7 @@ let g:highlightedyank_highlight_duration = 350
 
 let g:surround_{char2nr('-')} = "<% \r %>"
 let g:surround_{char2nr('=')} = "<%= \r %>"
+let g:surround_{char2nr('%')} = "%{\r}"
 
 let g:vim_textobj_elixir_mapping = 'E'
 
@@ -339,7 +349,7 @@ let g:quickrun_config = {}
 let g:quickrun_config['javascript.jsx'] = { 'type': 'javascript' }
 let g:quickrun_config['sh'] = { 'type': 'bash' }
 
-let g:sql_type_default = 'pgsql'
+let g:sql_type_default = 'sqlserver'
 
 let g:fzf_commands_expect = 'enter,ctrl-x'
 
@@ -358,6 +368,51 @@ augroup ft_match_words
   " add do/end as jumps for %
   autocmd FileType elixir let b:match_words = '\<do\>:\<end\>'
 augroup end
+
+let s:hl7_expanded=0
+function! HL7Toggle()
+  if s:hl7_expanded
+    call ContractHL7()
+    let s:hl7_expanded=0
+  else
+    call ExpandHL7()
+    let s:hl7_expanded=1
+  endif
+endfunction
+
+fun! ExpandHL7()
+  " Save cursor position
+  let l:save = winsaveview()
+  " Remove trailing whitespace
+  %s/\v(|)/\r/e
+  %s///e
+  " Move cursor to original position
+  call winrestview(l:save)
+endfun
+
+fun! ContractHL7()
+  " Save cursor position
+  let l:save = winsaveview()
+  " Remove trailing whitespace
+  g/^$/d
+  %s/\v\n/\/e
+  %s/\vMSH/MSH/e
+  %s/\v^MSH/MSH/e
+  %s/\vMSH/\\MSH/e
+  %s/\v$/\\
+  " Move cursor to original position
+  call winrestview(l:save)
+endfun
+
+augroup hl7
+  " add do/end as jumps for %
+  " autocmd FileType hl7 nmap <buffer> <C-h>e :%s/\v(|)/\r<CR>
+  " autocmd FileType hl7 nnoremap <C-h>e echom "called"
+  autocmd FileType hl7 nnoremap <silent> <C-h><C-h> :call HL7Toggle()<CR>
+augroup end
+
+nnoremap <leader>mtwf :execute "SlimeSend1 mix test.watch " . expand('%')<CR>
+nnoremap <leader>mtwt :execute "SlimeSend1 mix test.watch " . expand('%') . ":" . line(".")<CR>
 
 " switch to current file's parent directory
 " set autochdir was causing issues with some plugins but needs reinvestigating
@@ -379,11 +434,19 @@ augroup end
 
 highlight cursorline ctermbg=black
 
+fun! CromaHighlighting()
+    syn match cromaDefine '\<defun\>\(:\)\@!' nextgroup=elixirFunctionDeclaration skipwhite skipnl
+    syn match cromaPrivateDefine '\<defunp\>\(:\)\@!' nextgroup=elixirPrivateFunctionDeclaration skipwhite skipnl
+    hi link cromaDefine DraculaPink
+    hi link cromaPrivateDefine DraculaPink
+endfu
+
 " use pgsql syntax inside elixir non-doc string blocks
 augroup elixirAdditionalSyntax
   autocmd!
   autocmd FileType elixir call SyntaxRange#Include('\s\{2,\}\"\"\"', '\"\"\"', 'pgsql', 'NonText')
   autocmd FileType elixir call SyntaxRange#Include('calc(\"\"\"', '\"\"\"', 'javascript', 'Text')
+  autocmd FileType elixir call CromaHighlighting()
 augroup end
 
 augroup pum
@@ -391,15 +454,28 @@ augroup pum
   autocmd InsertLeave,CompleteDone * if pumvisible() == 0 | pclose | endif
 augroup end
 
+inoremap <expr> <C-j> pumvisible() ? "\<C-n>" : "\<C-j>"
+inoremap <expr> <C-k> pumvisible() ? "\<C-p>" : "\<C-k>"
+
 augroup term_settings
+  autocmd!
   autocmd TermOpen * setlocal nonumber norelativenumber bufhidden=hide
+  autocmd TermOpen * startinsert
+
+  autocmd TermOpen * nnoremap <buffer> gx :call Open(expand('<cfile>'))<CR>
+  autocmd TermOpen * vnoremap <buffer> gx "xy \| :call Open(@x)<CR>
 augroup end
 
-augroup term_insert
+function! Open(url)
+  silent execute '!open ' . shellescape(a:url, 1)
+  redraw!
+endfunction
+
+" augroup term_insert
   " go into insert mode if switching to a terminal buffer
-  autocmd BufEnter term://* startinsert
-  autocmd BufLeave term://* stopinsert
-augroup end
+  " autocmd BufEnter term://* startinsert
+  " autocmd BufLeave term://* stopinsert
+" augroup end
 
 " colors {{{1
 colorscheme dracula
@@ -407,9 +483,16 @@ colorscheme dracula
 highlight! IndentGuidesOdd  ctermbg=233
 highlight! IndentGuidesEven ctermbg=234
 
+highlight! CocFloating ctermbg=237
+highlight! link CocWarningSign DraculaPink
+
 highlight! jsBlock ctermfg=150
 highlight! jsObjectKey ctermfg=139
 highlight! Normal ctermbg=NONE
+
+highlight! link fieldSeparator DraculaPink
+highlight! link delimiters DraculaPurple
+highlight! link segmentType DraculaGreen
 
 " highlight! link TermCursor Cursor
 highlight! TermCursorNC ctermbg=0 ctermfg=15
@@ -420,7 +503,7 @@ highlight ErrorMsg guifg=black
 highlight link Constant DraculaPurple
 highlight link elixirArguments DraculaOrange
 
-highlight Comment cterm=italic gui=italic ctermfg=18
+highlight Comment cterm=italic gui=italic ctermfg=8
 
 highlight link elixirFunctionCall DraculaGreen
 
@@ -465,6 +548,9 @@ tnoremap <m-h> <c-\><c-n><c-w>h
 tnoremap <m-j> <c-\><c-n><c-w>j
 tnoremap <m-k> <c-\><c-n><c-w>k
 tnoremap <m-l> <c-\><c-n><c-w>l
+
+tnoremap <m-r><m-c> <c-\><c-n>:!$WATERPARK_SRC_DIR/run_cluster.sh<cr>
+nnoremap <m-r><m-c> :!$WATERPARK_SRC_DIR/run_cluster.sh<cr>
 
 " tab switching like tmux
 nnoremap <leader><m-h> :tabprev<cr>
@@ -541,6 +627,17 @@ vnoremap <leader>p "+p
 nnoremap <leader>P "+P
 vnoremap <leader>P "+P
 
+nnoremap <C-y> "*y
+vnoremap <C-y> "*y
+
+nnoremap <C-p> :CocList --normal yank<cr>
+vnoremap <C-p> :CocList --normal yank<cr>
+
+" toggle markdonw
+nnoremap <leader>mdp :MarkdownPreviewToggle<cr>
+
+" nnoremap <leader>Y :<C-u>CocList -A --normal yank<cr>
+
 " put searches in middle of screen
 nmap n nzz
 nmap N Nzz
@@ -560,13 +657,7 @@ nmap g# g#zz
 xnoremap * :<C-u>call <SID>VSetSearch('/')<CR>/<C-R>=@/<CR><CR>
 xnoremap # :<C-u>call <SID>VSetSearch('?')<CR>/<C-R>=@/<CR><CR>
 
-" format
-augroup format
-  autocmd FileType * nmap <F4> <plug>(coc-format)
-  autocmd FileType sql nmap <buffer> <F4> <Plug>(ale_fix)
-  autocmd FileType eelixir nmap <buffer> <F4> <Plug>(ale_fix)
-  autocmd FileType html nmap <buffer> <F4> <Plug>(ale_fix)
-augroup end
+nmap <F4> :call CocAction('format')<cr>
 
 " augroup fzfbindings
 "   autocmd BufEnter FileType fzf tunmap <esc><esc>
@@ -584,10 +675,11 @@ nnoremap <F5> :MundoToggle<CR>
 nnoremap <F8>  :TagbarToggle<CR>
 
 " edit vimrc/zshrc and source vimrc
-nnoremap <leader>ev :vsp $MYVIMRC<CR>
-nnoremap <leader>ez :vsp ~/.zshrc<CR>
-nnoremap <leader>sv :source $MYVIMRC<CR>
-nnoremap <leader>sf :source %<CR>
+nnoremap gev :e $MYVIMRC<CR>
+nnoremap gsv :so $MYVIMRC<CR>
+
+nnoremap gez :e ~/.zshrc<CR>
+nnoremap gsz :so ~/.zshrc<CR>
 
 " save session
 nnoremap <leader>s :mksession<CR>
@@ -647,7 +739,7 @@ command! BufCleanup :call BufCleanup()
 command! SynStack :call SynStack()
 
 " open a terminal in a different view while setting bufhidden to hide to keep alive
-command! -nargs=* VTerm :vsp
+command! -nargs=* VTerm :vert new
   \ | execute 'terminal' <args>
 command! -nargs=* VTermRepo :vsp
   \ fnameescape(FugitiveWorkTree())
@@ -672,7 +764,7 @@ imap <c-x><c-j> <plug>(fzf-complete-file-ag)
 imap <c-x><c-l> <plug>(fzf-complete-line)
 
 " fugitive bindings
-nnoremap <leader>gs :Gstatus<cr>
+nnoremap <leader>gs :Git<cr>
 nnoremap <leader>ga :Gwrite<cr>
 nnoremap <leader>gc :Gcommit -v<cr>
 nnoremap <leader>gd :Gdiff<cr>
@@ -681,10 +773,13 @@ nnoremap <leader>gL :Git log -p<cr>
 nnoremap <leader>gr :Grebase -i --autosquash
 
 nnoremap <leader>tn :w<CR>:TestNearest<CR>
+nnoremap <leader>tf :w<CR>:TestFile<CR>
+nnoremap <leader>ts :w<CR>:TestSuite<CR>
 
 nnoremap <leader>mcp :!mix compile<CR>
 nnoremap <leader>mcd :!mix credo --strict<CR>
 nnoremap <leader>mf :!mix format<CR>
+nnoremap <leader>mdz :!mix dialyzer<CR>
 
 nnoremap <F10> :echo 'hi<' . synIDattr(synID(line('.'),col('.'),1),'name') . '> trans<' . synIDattr(synID(line('.'),col('.'),0),'name') . '> lo<' . synIDattr(synIDtrans(synID(line('.'),col('.'),1)),'name') . '>'<CR>
 
@@ -904,3 +999,48 @@ if !empty(glob(git_vimrc))
     exec ":source " . git_vimrc
 endif
 
+function! HL7AirlineInit()
+  call airline#parts#define_function('hl7_segments', 'HL7SegmentInfo')
+  call airline#parts#define_condition('hl7_segments', 'expand("%:e") =~ "hl7"')
+  let g:airline_section_y = airline#section#create_right(['hl7_segments'])
+endfunction
+
+autocmd FileType hl7 call HL7AirlineInit()
+
+" This function adds the segment name and field number to the status line.
+function! HL7SegmentInfo()
+  let line=getline(".")
+  let pieces=split(line,"|")
+  let cursorAt = col(".")
+  if len(pieces) == 0
+    return "No Segment"
+  elseif (len(pieces) == 1) || (cursorAt <= strlen(pieces[0]))
+    if strlen(pieces[0]) > 3
+      return "Invalid segment?"
+    else
+      return pieces[0]
+    endif
+  endif
+  let seg=pieces[0] . "-"
+  let position=strlen(pieces[0])
+  let segNum=0
+  for index in range(1, len(pieces) - 1)
+    let segNum += 1
+    let position += 1
+    let piece = pieces[index]
+    if cursorAt <= (position + strlen(piece))
+      return seg . segNum
+    endif
+    let position += strlen(piece)
+  endfor
+  " If the last piece was the separator (|) then VIM doesn't treat that
+  " as a separate piece so we have to account for this special case.
+  if strpart(line, strlen(line)-1, 1) == "|"
+    let segNum += 1
+  endif
+  return seg . segNum
+endfunction
+
+function SlimeOverride_EscapeText_elixir(text)
+  return substitute(a:text, '\n[\^$]\@=', ' \\\n', 'g')
+endfunction
