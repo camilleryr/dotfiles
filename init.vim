@@ -9,7 +9,20 @@ endif
 
 " plugins {{{1
 call plug#begin('~/.config/nvim/plugged')
-" Plug 'christoomey/vim-tmux-navigator'
+
+Plug 'neovim/nvim-lspconfig'
+
+" autocomplete and snippets
+Plug 'hrsh7th/nvim-cmp'
+Plug 'hrsh7th/cmp-nvim-lsp'
+Plug 'hrsh7th/cmp-vsnip'
+Plug 'hrsh7th/cmp-buffer'
+Plug 'hrsh7th/cmp-path'
+Plug 'hrsh7th/cmp-cmdline'
+
+Plug 'onsails/lspkind-nvim'
+
+Plug 'nvim-treesitter/nvim-treesitter'
 
 Plug 'simnalamburt/vim-mundo'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
@@ -17,15 +30,12 @@ Plug 'junegunn/fzf.vim'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-rhubarb'
 Plug 'tpope/vim-fireplace'
-" Plug 'venantius/vim-cljfmt'
 
 Plug 'sheerun/vim-polyglot'
 Plug 'exu/pgsql.vim'
-" Plug 'Shougo/neco-vim'
 Plug 'vim-scripts/ingo-library'
 Plug 'vim-scripts/SyntaxRange'
 
-" Plug 'w0rp/ale'
 
 Plug 'kana/vim-textobj-user'
 Plug 'kana/vim-textobj-entire'      "ae/ie for entire file
@@ -41,14 +51,11 @@ Plug 'thinca/vim-quickrun'
 Plug 'tpope/vim-dispatch'
 Plug 'radenling/vim-dispatch-neovim'
 Plug 'vim-scripts/dbext.vim'
-" Plug 'suan/vim-instant-markdown', { 'do': 'npm install -g instant-markdown-d' }
 Plug 'chrisbra/csv.vim'
 Plug 'junegunn/vim-peekaboo'
 
-" Plug 'itchyny/lightline.vim'
 Plug 'airblade/vim-gitgutter'
 Plug 'nathanaelkane/vim-indent-guides'
-" Plug 'systemmonkey42/vim-coloresque'
 Plug 'guns/xterm-color-table.vim'
 Plug 'vim-scripts/AnsiEsc.vim'
 Plug 'ryanoasis/vim-devicons'
@@ -62,43 +69,25 @@ Plug 'tpope/vim-unimpaired'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-abolish'
 Plug 'tpope/vim-scriptease'
-" Plug 'tpope/vim-obsession'
 Plug 'tpope/vim-speeddating'
 Plug 'tpope/vim-endwise'
 Plug 'tpope/vim-vinegar'
 Plug 'tpope/vim-rsi'
-" Plug 'SirVer/ultisnips'
 Plug 'tpope/vim-dadbod'
 
-" Plug 'aoswalt/onedark.vim'
-" Plug 'morhetz/gruvbox'
 Plug 'dracula/vim'
 Plug 'markvincze/panda-vim'
 Plug 'w0ng/vim-hybrid'
 
-" Plug 'wannesm/wmgraphviz.vim'
-
-" Plug 'junegunn/limelight.vim'
-
-" ctags require https://github.com/universal-ctags/ctags
-" Plug 'majutsushi/tagbar'
 Plug 'ryanoasis/vim-devicons'
 Plug 'rizzatti/dash.vim'
-" Plug 'jeffkreeftmeijer/vim-numbertoggle'
 Plug 'stefandtw/quickfix-reflector.vim'
 
 Plug 'diepm/vim-rest-console'
 
-" Plug 'reasonml-editor/vim-reason-plus'
 Plug 'wesQ3/vim-windowswap'
 
 Plug 'neoclide/jsonc.vim'
-Plug 'neoclide/coc-neco'
-Plug 'neoclide/coc.nvim', {'do': { -> coc#util#install()}}
-" Plug 'neoclide/coc.nvim', {'do': 'yarn install'}
-Plug 'antoinemadec/coc-fzf'
-
-" Plug 'chrisbra/NrrwRgn'
 
 Plug 'vim-test/vim-test'
 Plug 'vim-airline/vim-airline'
@@ -115,39 +104,6 @@ Plug 'wellle/targets.vim'
 Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': ['markdown', 'vim-plug']}
 
 call plug#end()
-
-" let g:ale_linters = {
-" \  'sql': ['sql-lint'],
-" \}
-
-" let g:ale_fixers = {
-" \  'sql': ['sqlformat'],
-" \  'html': ['htmlbeautifier'],
-" \  'eelixir': ['htmlbeautifier'],
-" \}
-
-" let g:ale_sql_pgformatter_options = "
-" \ --comma-start
-" \ --comma-break
-" \ --spaces 2
-" \ --keyword-case 2
-" \ --type-case 2
-" \ --wrap-after 1
-" \ --placeholder ':: '
-" \"
-
-let s:coc_extensions = [
-\   'coc-css',
-\   'coc-html',
-\   'coc-json',
-\   'coc-eslint',
-\   'coc-prettier',
-\   'coc-tsserver',
-\ ]
-
- if exists('*coc#add_extension')
-  call call('coc#add_extension', s:coc_extensions)
-endif
 
 " vim settings {{{1
 set noswapfile
@@ -483,9 +439,6 @@ colorscheme dracula
 highlight! IndentGuidesOdd  ctermbg=233
 highlight! IndentGuidesEven ctermbg=234
 
-highlight! CocFloating ctermbg=237
-highlight! link CocWarningSign DraculaPink
-
 highlight! jsBlock ctermfg=150
 highlight! jsObjectKey ctermfg=139
 highlight! Normal ctermbg=NONE
@@ -534,12 +487,6 @@ cnoremap s/ s/\v
 " move cursor into wrapped lines
 nnoremap k gk
 nnoremap j gj
-
-" warning mappings lke unimpaired
-nmap <silent> [W <Plug>(coc-diagnostic-first)
-nmap <silent> [w <Plug>(coc-diagnostic-previous)
-nmap <silent> ]w <Plug>(coc-diagnostic-next)
-nmap <silent> ]W <Plug>(coc-diagnostic-last)
 
 " terminal keybindings
 au TermOpen * tnoremap <buffer> <Esc><Esc> <c-\><c-n>
@@ -630,13 +577,8 @@ vnoremap <leader>P "+P
 nnoremap <C-y> "*y
 vnoremap <C-y> "*y
 
-nnoremap <C-p> :CocList --normal yank<cr>
-vnoremap <C-p> :CocList --normal yank<cr>
-
 " toggle markdonw
 nnoremap <leader>mdp :MarkdownPreviewToggle<cr>
-
-" nnoremap <leader>Y :<C-u>CocList -A --normal yank<cr>
 
 " put searches in middle of screen
 nmap n nzz
@@ -657,18 +599,10 @@ nmap g# g#zz
 xnoremap * :<C-u>call <SID>VSetSearch('/')<CR>/<C-R>=@/<CR><CR>
 xnoremap # :<C-u>call <SID>VSetSearch('?')<CR>/<C-R>=@/<CR><CR>
 
-nmap <F4> :call CocAction('format')<cr>
-
 " augroup fzfbindings
 "   autocmd BufEnter FileType fzf tunmap <esc><esc>
 "   " autocmd BufLeave FileType fzf tnoremap <esc><esc> <c-\><c-n>
 " augroup end
-
-" run fixer
-nmap <F6> <plug>(coc-fix-current)
-
-" full info
-nmap <F10> <plug>(coc-diagnostic-info)
 
 " pane toggles
 nnoremap <F5> :MundoToggle<CR>
@@ -713,23 +647,6 @@ nnoremap <silent> <leader>Rp :ReadPreview<cr><Paste>
 
 " run 'q' macro on selection
 xnoremap Q :normal @q<CR>
-
-fun! MapLCKeys()
-  " Don't map for built-in ones
-  if &ft =~ 'vim\|help\|shell'
-    return
-  endif
-
-  nmap <buffer> <F3> <plug>(coc-rename)
-  nnoremap <buffer> <silent> K :call CocAction('doHover')<CR>
-  nnoremap <buffer> <silent> <C-w><C-k> :call CocAction('showSignatureHelp')<CR>
-
-  nmap <buffer> gd <plug>(coc-definition)
-  nmap <silent> gr <Plug>(coc-references)
-  nnoremap <silent> <leader>co  :CocList outline<CR>
-endfun
-
-autocmd FileType * call MapLCKeys()
 
 " commands {{{1
 " close all other buffers
@@ -793,35 +710,6 @@ command! ReadPreview call ReadPreview()
 
 " air-line
 let g:airline_powerline_fonts = 1
-
-"YouCompleteMe
-"let g:ycm_complete_in_comments = 1
-let g:ycm_seed_identifiers_with_syntax = 1
-let g:ycm_collect_identifiers_from_comments_and_strings = 1
-let g:ycm_use_ultisnips_completer = 1
-let g:ycm_filetype_specific_completion_to_disable = {
-    \ 'ruby' : 1,
-    \}
-
-let g:ycm_semantic_triggers =  {
-  \   'cs,java,javascript,typescript,d,python,perl6,scala,vb,elixir,go' : ['.'],
-  \   'ruby' : ['.', '::'],
-  \   'gitcommit' : ['#', ':'],
-  \ }
-
-
-" Overwritten so we can allow markdown completion.
-let g:ycm_filetype_blacklist = {
-  \ 'notes': 1,
-  \ 'unite': 1,
-  \ 'tagbar': 1,
-  \ 'pandoc': 1,
-  \ 'qf': 1,
-  \ 'vimwiki': 1,
-  \ 'text': 1,
-  \ 'infolog': 1,
-  \ 'mail': 1
-\}
 
 " quickfix-reflector
 let g:qf_modifiable = 1
@@ -1044,3 +932,106 @@ endfunction
 function SlimeOverride_EscapeText_elixir(text)
   return substitute(a:text, '\n[\^$]\@=', ' \\\n', 'g')
 endfunction
+
+autocmd BufWritePre *.ex lua vim.lsp.buf.formatting_sync(nil, 1000)
+autocmd BufWritePre *.exs lua vim.lsp.buf.formatting_sync(nil, 1000)
+
+lua << EOF
+local lspconfig = require("lspconfig")
+
+local custom_lsp_attach = function(client, bufrn)
+  local opts = { noremap=true, silent=true }
+  -- See `:help nvim_buf_set_keymap()` for more information
+  vim.api.nvim_buf_set_keymap(bufnr, 'n', 'K', '<cmd>lua vim.lsp.buf.hover()<CR>', opts)
+  vim.api.nvim_buf_set_keymap(bufnr, 'n', 'gK', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
+  vim.api.nvim_buf_set_keymap(bufnr, 'n', 'gd', '<cmd>lua vim.lsp.buf.definition()<CR>', opts)
+  vim.api.nvim_buf_set_keymap(bufnr, 'n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
+  vim.api.nvim_buf_set_keymap(bufnr, 'n', 'gD', '<cmd>lua vim.lsp.buf.declaration()<CR>', opts)
+  vim.api.nvim_buf_set_keymap(bufnr, 'n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
+  vim.api.nvim_buf_set_keymap(bufnr, 'n', '<leader>cr', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
+  vim.api.nvim_buf_set_keymap(bufnr, 'n', '<leader>ca', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
+  vim.api.nvim_buf_set_keymap(bufnr, 'n', '<leader>cf', '<cmd>lua vim.lsp.buf.formatting()<CR>', opts)
+  vim.api.nvim_buf_set_keymap(bufnr, 'n', '<leader>cd', '<cmd>lua vim.diagnostic.open_float()<CR>', opts)
+  vim.api.nvim_buf_set_keymap(bufnr, 'n', '[d', '<cmd>lua vim.diagnostic.goto_prev()<CR>', opts)
+  vim.api.nvim_buf_set_keymap(bufnr, 'n', ']d', '<cmd>lua vim.diagnostic.goto_next()<CR>', opts)
+  -- ... and other keymappings for LSP
+
+  -- Use LSP as the handler for omnifunc.
+  --    See `:help omnifunc` and `:help ins-completion` for more information.
+  vim.api.nvim_buf_set_option(bufnr, 'omnifunc', 'v:lua.vim.lsp.omnifunc')
+
+  -- Use LSP as the handler for formatexpr.
+  --    See `:help formatexpr` for more information.
+  vim.api.nvim_buf_set_option(bufnr, 'formatexpr', 'v:lua.vim.lsp.formatexpr()')
+
+  -- For plugins with an `on_attach` callback, call them here. For example:
+  -- require('completion').on_attach()
+end
+
+-- Neovim doesn't support snippets out of the box, so we need to mutate the
+-- capabilities we send to the language server to let them know we want snippets.
+local capabilities = vim.lsp.protocol.make_client_capabilities()
+capabilities.textDocument.completion.completionItem.snippetSupport = true
+
+-- Setup our autocompletion. These configuration options are the default ones
+-- copied out of the documentation.
+local cmp = require("cmp")
+
+cmp.setup({
+  snippet = {
+    expand = function(args)
+      -- For `vsnip` user.
+      vim.fn["vsnip#anonymous"](args.body)
+    end,
+  },
+  mapping = {
+    ["<C-b>"] = cmp.mapping.scroll_docs(-4),
+    ["<C-f>"] = cmp.mapping.scroll_docs(4),
+    ["<C-Space>"] = cmp.mapping.complete(),
+    ["<C-e>"] = cmp.mapping.close(),
+    ["<C-y>"] = cmp.mapping.confirm({ select = true }),
+  },
+  sources = {
+    { name = "nvim_lsp" },
+    { name = "vsnip" }
+  },
+  formatting = {
+    format = require("lspkind").cmp_format({
+      with_text = true,
+      menu = {
+        nvim_lsp = "[LSP]",
+      },
+    }),
+  },
+})
+
+lspconfig.efm.setup({
+  capabilities = capabilities,
+  on_attach = custom_lsp_attach,
+  filetypes = {"elixir"}
+})
+
+local path_to_elixirls = vim.fn.expand("/Users/LEX5591/workspace/camiller/dotfiles/language/elixir-ls/release/language_server.sh")
+
+lspconfig.elixirls.setup({
+  cmd = {path_to_elixirls},
+  settings = {
+    elixirLS = {
+      mixEnv = "DEV",
+      dialyzerEnabled = true,
+      fetchDeps = true
+    }
+  },
+  on_attach = custom_lsp_attach
+})
+
+-- require('nvim-treesitter.configs').setup {
+--  ensure_installed = "maintained",
+--  sync_install = false,
+--  ignore_install = { },
+--  highlight = {
+--    enable = true,
+--    disable = { },
+--  },
+--
+EOF
