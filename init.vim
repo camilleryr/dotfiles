@@ -28,8 +28,13 @@ Plug 'onsails/lspkind-nvim'
 Plug 'nvim-treesitter/nvim-treesitter'
 
 Plug 'simnalamburt/vim-mundo'
-Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
-Plug 'junegunn/fzf.vim'
+
+Plug 'nvim-lua/plenary.nvim'
+Plug 'nvim-telescope/telescope.nvim'
+Plug 'nvim-telescope/telescope-fzf-native.nvim', { 'do': 'make' }
+" Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+" Plug 'junegunn/fzf.vim'
+
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-rhubarb'
 Plug 'tpope/vim-fireplace'
@@ -166,7 +171,7 @@ if executable('nvr')
 endif
 
 " fix to not require extra keypress for fzf in terminal
-let $FZF_DEFAULT_OPTS .= ' --no-height'
+" let $FZF_DEFAULT_OPTS .= ' --no-height'
 
 
 " ---------------
@@ -310,7 +315,7 @@ let g:quickrun_config['sh'] = { 'type': 'bash' }
 
 let g:sql_type_default = 'sqlserver'
 
-let g:fzf_commands_expect = 'enter,ctrl-x'
+" let g:fzf_commands_expect = 'enter,ctrl-x'
 
 " autocommands {{{1
 augroup whitespace
@@ -493,7 +498,7 @@ nnoremap j gj
 
 " terminal keybindings
 au TermOpen * tnoremap <buffer> <Esc><Esc> <c-\><c-n>
-au FileType fzf tunmap <buffer> <Esc><Esc>
+" au FileType fzf tunmap <buffer> <Esc><Esc>
 tnoremap <m-h> <c-\><c-n><c-w>h
 tnoremap <m-j> <c-\><c-n><c-w>j
 tnoremap <m-k> <c-\><c-n><c-w>k
@@ -547,8 +552,8 @@ noremap <silent> <leader>X :Sexplore<CR>:wincmd =<CR>
 nnoremap <leader>sw :w !sudo tee % >/dev/null<cr>
 
 " super find
-nnoremap <leader>f :GFiles -co --exclude-per-directory=.gitignore<CR>
-nnoremap <leader>F :FZF<CR>
+" nnoremap <leader>f :GFiles -co --exclude-per-directory=.gitignore<CR>
+" nnoremap <leader>F :FZF<CR>
 
 " super search
 nnoremap <leader>/ :Rg<space>
@@ -678,10 +683,10 @@ command! -nargs=* TTermRepo :tabedit
   \ | execute 'lcd' fnameescape(FugitiveWorkTree())
   \ | execute 'terminal' <args>
 
-imap <c-x><c-k> <plug>(fzf-complete-word)
-imap <c-x><c-f> <plug>(fzf-complete-path)
-imap <c-x><c-j> <plug>(fzf-complete-file-ag)
-imap <c-x><c-l> <plug>(fzf-complete-line)
+" imap <c-x><c-k> <plug>(fzf-complete-word)
+" imap <c-x><c-f> <plug>(fzf-complete-path)
+" imap <c-x><c-j> <plug>(fzf-complete-file-ag)
+" imap <c-x><c-l> <plug>(fzf-complete-line)
 
 " fugitive bindings
 nnoremap <leader>gs :Git<cr>
@@ -737,24 +742,24 @@ function! ZoomToggle()
 endfunction
 
 " override Ag and Rg commands to search inside git repo and add preview
-command! -bang -nargs=* Ag
-  \ call fzf#vim#ag(<q-args>, fzf#vim#with_preview({'dir': FugitiveWorkTree()}), <bang>0)
+" command! -bang -nargs=* Ag
+"   \ call fzf#vim#ag(<q-args>, fzf#vim#with_preview({'dir': FugitiveWorkTree()}), <bang>0)
 
-command! -bang -nargs=* Rg
-  \ call fzf#vim#grep(
-    \ "rg --column --line-number --no-heading --color=always --smart-case ".shellescape(<q-args>),
-    \ 1,
-    \ fzf#vim#with_preview({'dir': FugitiveWorkTree()}),
-    \ <bang>0
-  \ )
+" command! -bang -nargs=* Rg
+"   \ call fzf#vim#grep(
+"     \ "rg --column --line-number --no-heading --color=always --smart-case ".shellescape(<q-args>),
+"     \ 1,
+"     \ fzf#vim#with_preview({'dir': FugitiveWorkTree()}),
+"     \ <bang>0
+"   \ )
 
-" override GFiles to add preview
-command! -bang -nargs=? GFiles
-    \ call fzf#vim#gitfiles(
-    \ '-co --exclude-per-directory=.gitignore',
-    \ fzf#vim#with_preview(),
-    \ <bang>0
-  \ )
+" " override GFiles to add preview
+" command! -bang -nargs=? GFiles
+"     \ call fzf#vim#gitfiles(
+"     \ '-co --exclude-per-directory=.gitignore',
+"     \ fzf#vim#with_preview(),
+"     \ <bang>0
+"   \ )
 
 " use :NN {filetype} on a visual selection to open a new buffer with
 " the filetype set - when the buffer is saved it will save the changes
@@ -1114,6 +1119,46 @@ require'nvim-web-devicons'.setup {
  -- will get overriden by `get_icons` option
  default = true;
 }
+
+require('telescope').setup{
+  defaults = {
+    -- Default configuration for telescope goes here:
+    -- config_key = value,
+    mappings = {
+      i = {
+        -- map actions.which_key to <C-h> (default: <C-/>)
+        -- actions.which_key shows the mappings for your picker,
+        -- e.g. git_{create, delete, ...}_branch for the git_branches picker
+        ["<C-h>"] = "which_key"
+      }
+    }
+  },
+  pickers = {
+    -- Default configuration for builtin pickers goes here:
+    -- picker_name = {
+    --   picker_config_key = value,
+    --   ...
+    -- }
+    -- Now the picker_config_key will be applied every time you call this
+    -- builtin picker
+  },
+  extensions = {
+    -- Your extension configuration goes here:
+    -- extension_name = {
+    --   extension_config_key = value,
+    -- }
+    -- please take a look at the readme of the extension you want to configure
+    fzf = {
+      fuzzy = true,                    -- false will only do exact matching
+      override_generic_sorter = true,  -- override the generic sorter
+      override_file_sorter = true,     -- override the file sorter
+      case_mode = "smart_case",        -- or "ignore_case" or "respect_case"
+                                       -- the default case_mode is "smart_case"
+    },
+  }
+}
+
+require('telescope').load_extension('fzf')
 
 -- require('nvim-treesitter.configs').setup {
 --  ensure_installed = "maintained",
