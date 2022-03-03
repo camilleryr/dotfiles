@@ -111,11 +111,12 @@ done
 
 if [[ $setup_neovim || $all ]]; then
   nvim_dir=$HOME/.config/nvim
+  efm_langserver_dir=$HOME/.config/efm-langserver
   mkdir -p ${nvim_dir}
+  mkdir -p ${efm_langserver_dir}
 
   try_link $this_dir/init.vim $nvim_dir/init.vim
-  try_link $this_dir/init.lua $nvim_dir/init.lua
-  try_link $this_dir/coc-settings.json $nvim_dir/coc-settings.json
+  try_link $this_dir/efm-langserver.config.yaml $efm_langserver_dir/config.yaml
   try_link $this_dir/UltiSnips $nvim_dir/UltiSnips
 
   if $(type pip3 >/dev/null 2>&1); then
