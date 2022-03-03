@@ -32,8 +32,6 @@ Plug 'simnalamburt/vim-mundo'
 Plug 'nvim-lua/plenary.nvim'
 Plug 'nvim-telescope/telescope.nvim'
 Plug 'nvim-telescope/telescope-fzf-native.nvim', { 'do': 'make' }
-" Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
-" Plug 'junegunn/fzf.vim'
 
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-rhubarb'
@@ -170,10 +168,6 @@ if executable('nvr')
   let $VISUAL="nvr -cc split --remote-wait +'set bufhidden=wipe'"
 endif
 
-" fix to not require extra keypress for fzf in terminal
-" let $FZF_DEFAULT_OPTS .= ' --no-height'
-
-
 " ---------------
 " Regular Mappings
 " ---------------
@@ -254,14 +248,11 @@ vnoremap <C-k> 15gkzz
 " Leader Mappings
 " ---------------
 
-" Highlight search word under cursor without jumping to next
-" nnoremap <leader>h *<C-O>
-
 " Toggle spelling mode
 nnoremap <silent> <leader>sp :set spell!<CR>
 
 " Quickly switch to last buffer
-" nnoremap <leader>, :e#<CR>
+nnoremap <leader>, :e#<CR>
 
 " Split window vertically or horizontally *and* switch to the new split!
 nnoremap <silent> <leader>hs :split<Bar>:wincmd j<CR>:wincmd =<CR>
@@ -276,10 +267,6 @@ nnoremap <leader>r :%s/
 vnoremap <leader>r :s/
 
 vnoremap // y/<C-R>"<CR>
-
-" nmap ghp <Plug>(GitGutterPreviewHunk)
-" nmap ghs <Plug>(GitGutterStageHunk)
-" nmap ghu <Plug>(GitGutterUndoHunk)
 
 if has ('autocmd') " Remain compatible with earlier versions
  augroup vimrc     " Source vim configuration upon save
@@ -315,18 +302,11 @@ let g:quickrun_config['sh'] = { 'type': 'bash' }
 
 let g:sql_type_default = 'sqlserver'
 
-" let g:fzf_commands_expect = 'enter,ctrl-x'
-
 " autocommands {{{1
 augroup whitespace
   " automatically strip trailiing whitespace on save
   autocmd BufWritePre * StripWhitespace
 augroup end
-
-" augroup dispatch_commands
-"   autocmd FileType sh let b:dispatch = '$SHELL %'
-"   autocmd FileType dot let b:dispatch = 'dot -Tpng % -o %:r.png'
-" augroup end
 
 augroup ft_match_words
   " add do/end as jumps for %
@@ -378,24 +358,6 @@ augroup end
 nnoremap <leader>mtwf :execute "SlimeSend1 mix test.watch " . expand('%')<CR>
 nnoremap <leader>mtwt :execute "SlimeSend1 mix test.watch " . expand('%') . ":" . line(".")<CR>
 
-" switch to current file's parent directory
-" set autochdir was causing issues with some plugins but needs reinvestigating
-" augroup vimrc_set_working_dir
-"   au!
-"   autocmd BufRead,BufEnter * silent! lcd %:p:h
-" augroup end
-
-" only show cursor line one active window
-" augroup cursorLine
-"   autocmd!
-"   autocmd BufEnter * setlocal cursorline
-"   autocmd BufLeave * setlocal nocursorline
-" augroup end
-
-" set cursorline
-" autocmd InsertEnter * highlight CursorLine guibg=#000050 guifg=fg
-" autocmd InsertLeave * highlight CursorLine guibg=#444444 guifg=fg
-
 highlight cursorline ctermbg=black
 
 fun! CromaHighlighting()
@@ -434,12 +396,6 @@ function! Open(url)
   silent execute '!open ' . shellescape(a:url, 1)
   redraw!
 endfunction
-
-" augroup term_insert
-  " go into insert mode if switching to a terminal buffer
-  " autocmd BufEnter term://* startinsert
-  " autocmd BufLeave term://* stopinsert
-" augroup end
 
 " colors {{{1
 colorscheme dracula
@@ -551,16 +507,12 @@ noremap <silent> <leader>X :Sexplore<CR>:wincmd =<CR>
 " use sudo for file if forgot to when opened
 nnoremap <leader>sw :w !sudo tee % >/dev/null<cr>
 
-" super find
-" nnoremap <leader>f :GFiles -co --exclude-per-directory=.gitignore<CR>
-" nnoremap <leader>F :FZF<CR>
-
 " super search
-nnoremap <leader>/ :Rg<space>
-nnoremap <leader>? :BLines<space>
+nnoremap <leader>f :Telescope find_file<cr>
+nnoremap <leader>/ :Telescope grep_string search=
 
 " buffer management
-nnoremap <leader>b :Buffers<cr>
+nnoremap <leader>b :Telescope buffers<cr>
 nnoremap <c-up> :ls<cr>:b
 nnoremap <c-right> :bn<cr>
 nnoremap <c-left> :bp<cr>
@@ -571,7 +523,7 @@ nnoremap <leader>q :q<cr>
 nnoremap <leader>Q :bd<cr>
 
 " search for word under cursor with <leader>*
-nnoremap <leader>* :Rg <c-r><c-w><CR>
+nnoremap <leader>* :Telescope grep_string<cr>
 nnoremap <leader>& "myiW :Rg <c-r>m<CR>
 
 " system clipboard yank
@@ -606,11 +558,6 @@ nmap g# g#zz
 " search for visual selection
 xnoremap * :<C-u>call <SID>VSetSearch('/')<CR>/<C-R>=@/<CR><CR>
 xnoremap # :<C-u>call <SID>VSetSearch('?')<CR>/<C-R>=@/<CR><CR>
-
-" augroup fzfbindings
-"   autocmd BufEnter FileType fzf tunmap <esc><esc>
-"   " autocmd BufLeave FileType fzf tnoremap <esc><esc> <c-\><c-n>
-" augroup end
 
 " pane toggles
 nnoremap <F5> :MundoToggle<CR>
@@ -683,19 +630,13 @@ command! -nargs=* TTermRepo :tabedit
   \ | execute 'lcd' fnameescape(FugitiveWorkTree())
   \ | execute 'terminal' <args>
 
-" imap <c-x><c-k> <plug>(fzf-complete-word)
-" imap <c-x><c-f> <plug>(fzf-complete-path)
-" imap <c-x><c-j> <plug>(fzf-complete-file-ag)
-" imap <c-x><c-l> <plug>(fzf-complete-line)
-
 " fugitive bindings
 nnoremap <leader>gs :Git<cr>
-nnoremap <leader>ga :Gwrite<cr>
-nnoremap <leader>gc :Gcommit -v<cr>
-nnoremap <leader>gd :Gdiff<cr>
-nnoremap <leader>gl :Git log<cr>
-nnoremap <leader>gL :Git log -p<cr>
-nnoremap <leader>gr :Grebase -i --autosquash
+nnoremap <leader>gS :Telescope git_stash<cr>
+nnoremap <leader>gc :Telescope git_bcommits<cr>
+nnoremap <leader>gC :Telescope git_commits<cr>
+nnoremap <leader>gb :Telescope git_branches<cr>
+
 
 nnoremap <leader>tn :w<CR>:TestNearest<CR>
 nnoremap <leader>tf :w<CR>:TestFile<CR>
@@ -740,26 +681,6 @@ function! ZoomToggle()
     let s:maximized=1
   endif
 endfunction
-
-" override Ag and Rg commands to search inside git repo and add preview
-" command! -bang -nargs=* Ag
-"   \ call fzf#vim#ag(<q-args>, fzf#vim#with_preview({'dir': FugitiveWorkTree()}), <bang>0)
-
-" command! -bang -nargs=* Rg
-"   \ call fzf#vim#grep(
-"     \ "rg --column --line-number --no-heading --color=always --smart-case ".shellescape(<q-args>),
-"     \ 1,
-"     \ fzf#vim#with_preview({'dir': FugitiveWorkTree()}),
-"     \ <bang>0
-"   \ )
-
-" " override GFiles to add preview
-" command! -bang -nargs=? GFiles
-"     \ call fzf#vim#gitfiles(
-"     \ '-co --exclude-per-directory=.gitignore',
-"     \ fzf#vim#with_preview(),
-"     \ <bang>0
-"   \ )
 
 " use :NN {filetype} on a visual selection to open a new buffer with
 " the filetype set - when the buffer is saved it will save the changes
