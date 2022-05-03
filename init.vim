@@ -411,14 +411,6 @@ highlight! link fieldSeparator DraculaPink
 highlight! link delimiters DraculaPurple
 highlight! link segmentType DraculaGreen
 
-" highlight! link TermCursor Cursor
-highlight! TermCursorNC ctermbg=0 ctermfg=15
-
-highlight Pmenu ctermbg=darkgray ctermfg=white
-highlight PmenuSel ctermbg=lightgray ctermfg=black
-highlight ErrorMsg guifg=black
-highlight link Constant DraculaPurple
-highlight link elixirArguments DraculaOrange
 
 highlight Comment cterm=italic gui=italic ctermfg=8
 
@@ -508,7 +500,7 @@ noremap <silent> <leader>X :Sexplore<CR>:wincmd =<CR>
 nnoremap <leader>sw :w !sudo tee % >/dev/null<cr>
 
 " super search
-nnoremap <leader>f :Telescope find_file<cr>
+nnoremap <leader>f :Telescope find_files<cr>
 nnoremap <leader>/ :Telescope grep_string search=
 
 " buffer management
@@ -871,27 +863,27 @@ local lspconfig = require("lspconfig")
 local custom_lsp_attach = function(client, bufrn)
   local opts = { noremap=true, silent=true }
   -- See `:help nvim_buf_set_keymap()` for more information
-  vim.api.nvim_buf_set_keymap(bufnr, 'n', 'K', '<cmd>lua vim.lsp.buf.hover()<CR>', opts)
-  vim.api.nvim_buf_set_keymap(bufnr, 'n', 'gK', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
-  vim.api.nvim_buf_set_keymap(bufnr, 'n', 'gd', '<cmd>lua vim.lsp.buf.definition()<CR>', opts)
-  vim.api.nvim_buf_set_keymap(bufnr, 'n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
-  vim.api.nvim_buf_set_keymap(bufnr, 'n', 'gD', '<cmd>lua vim.lsp.buf.declaration()<CR>', opts)
-  vim.api.nvim_buf_set_keymap(bufnr, 'n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
-  vim.api.nvim_buf_set_keymap(bufnr, 'n', '<leader>cr', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
-  vim.api.nvim_buf_set_keymap(bufnr, 'n', '<leader>ca', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
-  vim.api.nvim_buf_set_keymap(bufnr, 'n', '<leader>cf', '<cmd>lua vim.lsp.buf.formatting()<CR>', opts)
-  vim.api.nvim_buf_set_keymap(bufnr, 'n', '<leader>cd', '<cmd>lua vim.diagnostic.open_float()<CR>', opts)
-  vim.api.nvim_buf_set_keymap(bufnr, 'n', '[d', '<cmd>lua vim.diagnostic.goto_prev()<CR>', opts)
-  vim.api.nvim_buf_set_keymap(bufnr, 'n', ']d', '<cmd>lua vim.diagnostic.goto_next()<CR>', opts)
+  vim.api.nvim_set_keymap('n', 'K', '<cmd>lua vim.lsp.buf.hover()<CR>', opts)
+  vim.api.nvim_set_keymap('n', 'gK', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
+  vim.api.nvim_set_keymap('n', 'gd', '<cmd>lua vim.lsp.buf.definition()<CR>', opts)
+  vim.api.nvim_set_keymap('n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
+  vim.api.nvim_set_keymap('n', 'gD', '<cmd>lua vim.lsp.buf.declaration()<CR>', opts)
+  vim.api.nvim_set_keymap('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
+  vim.api.nvim_set_keymap('n', '<leader>cr', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
+  vim.api.nvim_set_keymap('n', '<leader>ca', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
+  vim.api.nvim_set_keymap('n', '<leader>cf', '<cmd>lua vim.lsp.buf.formatting()<CR>', opts)
+  vim.api.nvim_set_keymap('n', '<leader>cd', '<cmd>lua vim.diagnostic.open_float()<CR>', opts)
+  vim.api.nvim_set_keymap('n', '[d', '<cmd>lua vim.diagnostic.goto_prev()<CR>', opts)
+  vim.api.nvim_set_keymap('n', ']d', '<cmd>lua vim.diagnostic.goto_next()<CR>', opts)
   -- ... and other keymappings for LSP
 
   -- Use LSP as the handler for omnifunc.
   --    See `:help omnifunc` and `:help ins-completion` for more information.
-  vim.api.nvim_buf_set_option(bufnr, 'omnifunc', 'v:lua.vim.lsp.omnifunc')
+  vim.api.nvim_set_option('omnifunc', 'v:lua.vim.lsp.omnifunc')
 
   -- Use LSP as the handler for formatexpr.
   --    See `:help formatexpr` for more information.
-  vim.api.nvim_buf_set_option(bufnr, 'formatexpr', 'v:lua.vim.lsp.formatexpr()')
+  vim.api.nvim_set_option('formatexpr', 'v:lua.vim.lsp.formatexpr()')
 
   -- For plugins with an `on_attach` callback, call them here. For example:
   -- require('completion').on_attach()
@@ -1082,7 +1074,7 @@ require('telescope').setup{
 require('telescope').load_extension('fzf')
 
 -- require('nvim-treesitter.configs').setup {
---  ensure_installed = "maintained",
+--  ensure_installed = "all",
 --  sync_install = false,
 --  ignore_install = { },
 --  highlight = {
