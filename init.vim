@@ -16,22 +16,12 @@ Plug 'kyazdani42/nvim-web-devicons'
 Plug 'folke/trouble.nvim'
 
 " autocomplete and snippets
-Plug 'hrsh7th/nvim-cmp'
-Plug 'hrsh7th/cmp-nvim-lsp'
-Plug 'hrsh7th/cmp-vsnip'
-Plug 'hrsh7th/cmp-buffer'
-Plug 'hrsh7th/cmp-path'
-Plug 'hrsh7th/cmp-cmdline'
-
-Plug 'onsails/lspkind-nvim'
-
-Plug 'nvim-treesitter/nvim-treesitter'
-
 Plug 'simnalamburt/vim-mundo'
 
 Plug 'nvim-lua/plenary.nvim'
 Plug 'nvim-telescope/telescope.nvim'
 Plug 'nvim-telescope/telescope-fzf-native.nvim', { 'do': 'make' }
+Plug 'nvim-telescope/telescope-github.nvim'
 
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-rhubarb'
@@ -90,24 +80,32 @@ Plug 'rizzatti/dash.vim'
 Plug 'stefandtw/quickfix-reflector.vim'
 
 Plug 'diepm/vim-rest-console'
-
 Plug 'wesQ3/vim-windowswap'
-
 Plug 'neoclide/jsonc.vim'
 
 Plug 'vim-test/vim-test'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 
-Plug 'elixir-editors/vim-elixir'
 Plug 'vim-erlang/vim-erlang-runtime'
 Plug 'lambdalisue/vim-manpager'
 Plug 'gitrust/vim-hl7'
 
 Plug 'jpalardy/vim-slime'
 Plug 'wellle/targets.vim'
-
 Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': ['markdown', 'vim-plug']}
+
+Plug 'hrsh7th/nvim-cmp'
+Plug 'hrsh7th/cmp-nvim-lsp'
+Plug 'hrsh7th/cmp-vsnip'
+Plug 'hrsh7th/cmp-buffer'
+Plug 'hrsh7th/cmp-path'
+Plug 'hrsh7th/cmp-cmdline'
+
+Plug 'onsails/lspkind-nvim'
+
+Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+Plug 'nvim-treesitter/playground'
 
 call plug#end()
 
@@ -141,7 +139,7 @@ set wildignorecase  "ignore case on files and directories
 set gdefault        "global search by default
 set lazyredraw      "no need to redraw all the time
 set nohlsearch      "don't highlight searches by default
-set inccommand=nosplit  "show substitution while typing
+set inccommand=split  "show substitution while typing
 set path+=**        "include subdirectory globbing in path for :find
 set diffopt+=vertical   "vertical split for diffs
 
@@ -162,6 +160,9 @@ if isdirectory($HOME . '/.config/nvim/undo') == 0
 endif
 set undofile
 set undodir=~/.config/nvim/undo/
+
+" set foldmethod=expr
+" set foldexpr=nvim_treesitter#foldexpr()
 
 " override $VISUAL to use nvr inside neovim
 if executable('nvr')
@@ -274,6 +275,8 @@ if has ('autocmd') " Remain compatible with earlier versions
     autocmd! BufWritePost $MYGVIMRC if has('gui_running') | so % | echom "Reloaded " . $MYGVIMRC | endif | redraw
   augroup END
 endif " has autocmd
+
+let g:tar_cmd="/usr/local/bin/gtar"
 
 let g:slime_target = "neovim"
 
@@ -636,10 +639,12 @@ nnoremap <leader>ts :w<CR>:TestSuite<CR>
 
 nnoremap <leader>mcp :!mix compile<CR>
 nnoremap <leader>mcd :!mix credo --strict<CR>
-nnoremap <leader>mf :!mix format<CR>
+nnoremap <leader>mfp :!mix format<CR>
+nnoremap <leader>mff :!mix format %<CR>
 nnoremap <leader>mdz :!mix dialyzer<CR>
 
 nnoremap <F10> :echo 'hi<' . synIDattr(synID(line('.'),col('.'),1),'name') . '> trans<' . synIDattr(synID(line('.'),col('.'),0),'name') . '> lo<' . synIDattr(synIDtrans(synID(line('.'),col('.'),1)),'name') . '>'<CR>
+nnoremap <silent> gx :execute 'silent! !xdg-open ' . shellescape(expand('<cWORD>'), 1)<cr>
 
 command! -range FormatJSON :<line1>,<line2>call FormatJSON()
 
@@ -854,8 +859,8 @@ function SlimeOverride_EscapeText_elixir(text)
   return substitute(a:text, '\n[\^$]\@=', ' \\\n', 'g')
 endfunction
 
-autocmd BufWritePre *.ex lua vim.lsp.buf.formatting_sync(nil, 1000)
-autocmd BufWritePre *.exs lua vim.lsp.buf.formatting_sync(nil, 1000)
+autocmd BufWritePre *.ex lua vim.lsp.buf.formatting({ async = true })
+autocmd BufWritePre *.exs lua vim.lsp.buf.formatting_sync({ async = true })
 
 lua << EOF
 local lspconfig = require("lspconfig")
@@ -891,7 +896,7 @@ end
 
 -- Neovim doesn't support snippets out of the box, so we need to mutate the
 -- capabilities we send to the language server to let them know we want snippets.
-local capabilities = vim.lsp.protocol.make_client_capabilities()
+local capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
 capabilities.textDocument.completion.completionItem.snippetSupport = true
 
 -- Setup our autocompletion. These configuration options are the default ones
@@ -905,16 +910,16 @@ cmp.setup({
       vim.fn["vsnip#anonymous"](args.body)
     end,
   },
-  mapping = {
+  mapping = cmp.mapping.preset.insert({
     ["<C-b>"] = cmp.mapping.scroll_docs(-4),
     ["<C-f>"] = cmp.mapping.scroll_docs(4),
     ["<C-Space>"] = cmp.mapping.complete(),
     ["<C-e>"] = cmp.mapping.close(),
     ["<C-y>"] = cmp.mapping.confirm({ select = true }),
-  },
-  sources = {
-    { name = "nvim_lsp" },
-    { name = "vsnip" }
+  }),
+  window = {
+      -- completion = cmp.config.window.bordered(),
+      -- documentation = cmp.config.window.bordered(),
   },
   formatting = {
     format = require("lspkind").cmp_format({
@@ -924,6 +929,30 @@ cmp.setup({
       },
     }),
   },
+  sources = cmp.config.sources({
+    { name = "nvim_lsp" },
+    { name = "vsnip" }
+  }, {
+    { name = 'buffer' },
+  })
+})
+
+-- Use buffer source for `/` (if you enabled `native_menu`, this won't work anymore).
+cmp.setup.cmdline('/', {
+  mapping = cmp.mapping.preset.cmdline(),
+  sources = {
+    { name = 'buffer' }
+  }
+})
+
+-- Use cmdline & path source for ':' (if you enabled `native_menu`, this won't work anymore).
+cmp.setup.cmdline(':', {
+  mapping = cmp.mapping.preset.cmdline(),
+  sources = cmp.config.sources({
+    { name = 'path' }
+  }, {
+    { name = 'cmdline' }
+  })
 })
 
 lspconfig.efm.setup({
@@ -1013,7 +1042,8 @@ lspconfig.elixirls.setup({
       fetchDeps = true
     }
   },
-  on_attach = custom_lsp_attach
+  on_attach = custom_lsp_attach,
+  capabilities = capabilities
 })
 
 require'nvim-web-devicons'.setup {
@@ -1071,15 +1101,16 @@ require('telescope').setup{
   }
 }
 
+require('telescope').load_extension('gh')
 require('telescope').load_extension('fzf')
 
--- require('nvim-treesitter.configs').setup {
---  ensure_installed = "all",
---  sync_install = false,
---  ignore_install = { },
---  highlight = {
---    enable = true,
---    disable = { },
---  },
---
+require('nvim-treesitter.configs').setup {
+ ensure_installed = "all",
+ sync_install = false,
+ ignore_install = { },
+ highlight = {
+   enable = true,
+   disable = { },
+ },
+}
 EOF
