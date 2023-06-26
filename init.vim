@@ -22,6 +22,7 @@ Plug 'nvim-lua/plenary.nvim'
 Plug 'nvim-telescope/telescope.nvim'
 Plug 'nvim-telescope/telescope-fzf-native.nvim', { 'do': 'make' }
 Plug 'nvim-telescope/telescope-github.nvim'
+Plug 'nvim-telescope/telescope-live-grep-args.nvim'
 
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-rhubarb'
@@ -859,8 +860,8 @@ function SlimeOverride_EscapeText_elixir(text)
   return substitute(a:text, '\n[\^$]\@=', ' \\\n', 'g')
 endfunction
 
-autocmd BufWritePre *.ex lua vim.lsp.buf.formatting({ async = true })
-autocmd BufWritePre *.exs lua vim.lsp.buf.formatting_sync({ async = true })
+autocmd BufWritePre *.ex lua vim.lsp.buf.format({})
+autocmd BufWritePre *.exs lua vim.lsp.buf.format({})
 
 lua << EOF
 local lspconfig = require("lspconfig")
@@ -896,7 +897,7 @@ end
 
 -- Neovim doesn't support snippets out of the box, so we need to mutate the
 -- capabilities we send to the language server to let them know we want snippets.
-local capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
+local capabilities = require('cmp_nvim_lsp').default_capabilities(vim.lsp.protocol.make_client_capabilities())
 capabilities.textDocument.completion.completionItem.snippetSupport = true
 
 -- Setup our autocompletion. These configuration options are the default ones
@@ -1101,11 +1102,34 @@ require('telescope').setup{
   }
 }
 
+local telescope = require("telescope")
 require('telescope').load_extension('gh')
 require('telescope').load_extension('fzf')
+require("telescope").load_extension('live_grep_args')
+
+local lga_actions = require("telescope-live-grep-args.actions")
+
+telescope.setup {
+  extensions = {
+    live_grep_args = {
+      auto_quoting = true, -- enable/disable auto-quoting
+      -- define mappings, e.g.
+      mappings = { -- extend mappings
+        i = {
+          ["<C-k>"] = lga_actions.quote_prompt(),
+          ["<C-i>"] = lga_actions.quote_prompt({ postfix = " --iglob " }),
+        },
+      },
+      -- ... also accepts theme settings, for example:
+      -- theme = "dropdown", -- use dropdown theme
+      -- theme = { }, -- use own theme spec
+      -- layout_config = { mirror=true }, -- mirror preview pane
+    }
+  }
+}
 
 require('nvim-treesitter.configs').setup {
- ensure_installed = "all",
+ auto_install = true,
  sync_install = false,
  ignore_install = { },
  highlight = {
