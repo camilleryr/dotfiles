@@ -16,7 +16,7 @@ export VISUAL=$EDITOR
 export PAGER='less'
 
 
-export FZF_DEFAULT_COMMAND='ag --hidden --ignore .git -g ""'
+export FZF_DEFAULT_COMMAND='rg --hidden --ignore .git -g ""'
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 
 # enable iex history in otp 20
@@ -67,3 +67,5 @@ fi
 # The original version is saved in .zprofile.pysave
 PATH="/Library/Frameworks/Python.framework/Versions/3.9/bin:${PATH}"
 export PATH
+
+eval "$(/opt/homebrew/bin/brew shellenv)"
