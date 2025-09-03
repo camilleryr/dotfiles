@@ -122,15 +122,37 @@ return {
 
       elixir.setup {
         nextls = {
-          enable = true,
-          cmd = "/Users/cmiller/.local/bin/nextls",
+          enable = false,
+          -- cmd = "/Users/cmiller/.local/bin/nextls",
           -- port = 9000,
+          init_options = {
+            mix_env = "dev",
+            mix_target = "host",
+            experimental = {
+              completions = {
+                enable = true -- control if completions are enabled. defaults to false
+              }
+            }
+          },
           on_attach = function(client, bufnr)
             vim.print("nextls attached")
           end,
         },
-        credols = { enable = false },
-        elixirls = { enable = false }
+        credols = { enable = true },
+        elixirls = {
+          enable = false,
+          settings = elixirls.settings {
+            dialyzerEnabled = false,
+            fetchDeps = true,
+            enableTestLenses = true,
+            suggestSpecs = true,
+          },
+          on_attach = function(client, bufnr)
+            vim.keymap.set("n", "<space>efp", ":ElixirFromPipe<cr>", { buffer = true, noremap = true })
+            vim.keymap.set("n", "<space>etp", ":ElixirToPipe<cr>", { buffer = true, noremap = true })
+            vim.keymap.set("v", "<space>eem", ":ElixirExpandMacro<cr>", { buffer = true, noremap = true })
+          end
+        }
       }
     end,
     dependencies = {

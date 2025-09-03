@@ -2,13 +2,14 @@ return {
   {
     'nvim-telescope/telescope.nvim',
     dependencies = {
-      {'nvim-telescope/telescope-fzf-native.nvim', build = 'make'},
+      {'nvim-telescope/telescope-fzf-native.nvim', build = 'cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release'},
       "debugloop/telescope-undo.nvim",
       'nvim-telescope/telescope-github.nvim',
       'nvim-telescope/telescope-live-grep-args.nvim'
     },
     config = function()
       local set = vim.keymap.set
+      local actions = require("telescope.actions")
       -- super search
       set('n', '<leader>f', ':Telescope find_files<cr>', {})
       set('n', '<leader>/', ':Telescope grep_string search=', {})
@@ -29,6 +30,26 @@ return {
           }
         },
         pickers = {
+          grep_string = {
+            additional_args  = {"--glob", "!**/.git/*", "--glob", "!**/assets/vendor/**/*", "--glob", "!**/priv/static/**/*" },
+            use_regex = true
+          },
+          find_files = {
+            -- `hidden = true` will still show the inside of `.git/` as it's not `.gitignore`d.
+            find_command = { "rg", "--files", "--hidden", "--glob", "!**/.git/*", "--glob", "!**/assets/vendor/**/*"},
+          },
+          buffers = {
+            ignore_current_buffer = true,
+            sort_lastused = true,
+            mappings = {
+              ["i"] = {
+                -- your custom insert mode mappings
+                ["<c-d>"] = actions.delete_buffer + actions.move_to_top,
+              },
+              ["n"] = {
+                ["x"] = actions.delete_buffer,
+              },
+            }
           -- Default configuration for builtin pickers goes here:
           -- picker_name = {
           --   picker_config_key = value,
@@ -36,6 +57,7 @@ return {
           -- }
           -- Now the picker_config_key will be applied every time you call this
           -- builtin picker
+          },
         },
         extensions = {
           -- Your extension configuration goes here:
@@ -47,7 +69,7 @@ return {
             use_delta = true,
             use_custom_command = nil, -- setting this implies `use_delta = false`. Accepted format is: { "bash", "-c", "echo '$DIFF' | delta" }
             side_by_side = false,
-            diff_context_lines = vim.o.scrolloff,
+            vim_diff_opts = { ctxlen = 0 },
             entry_format = "state #$ID, $STAT, $TIME",
             time_format = "",
             mappings = {

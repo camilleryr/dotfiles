@@ -50,6 +50,7 @@ g.mouse="a"
 g.mapleader=" "
 g.undofile=true
 g.undodir="~/.config/nvim/undo/"
+g.health = { style = 'float' }
 
 local wo = vim.wo
 wo.wrap=false
@@ -191,8 +192,8 @@ set('n', '<leader>mff', ':!mix format %<CR>', {})
 set('n', '<leader>mdz', ':!mix dialyzer<CR>', {})
 
 set('n', '<leader>sdb', ':lua require("camiller.dadbod-db-picker").select_db()<CR>', {})
-set('n', 'gg', 'vip:DB<CR>', {})
-set('v', 'gg', ':DB<CR>', {})
+set('n', '<leader>gg', 'vip:DB<CR>', {})
+set('v', '<leader>gg', ':DB<CR>', {})
 
 local wo = vim.wo
 wo.number=true
@@ -208,12 +209,8 @@ require("lazy").setup({
     { import = "plugins" },
 })
 
-local LSP = require("camiller.lsp")
-
-LSP.setup(
-  "lua_ls",
-  { settings = { Lua = { hint = { enable = true, arrayIndex = "Disable" }, format = { enable = false } } } }
-)
-LSP.setup("jsonls", {})
+vim.lsp.enable('expert')
+vim.lsp.enable('lua_ls')
+vim.lsp.enable('jsonls')
 
 require("camiller.autocmds")

@@ -1,11 +1,13 @@
 return {
   {
     "nvim-treesitter/nvim-treesitter",
+    branch = 'master',
     lazy = true,
     build = ":TSUpdate",
     event = { "BufReadPost", "BufNewFile" },
     opts = {
       ensure_installed = "all",
+      ignore_install = { "ipkg" },
       highlight = { enable = true },
       indent = { enable = true },
       playground = {

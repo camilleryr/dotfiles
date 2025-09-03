@@ -332,7 +332,8 @@ fun! ExpandHL7()
   " Save cursor position
   let l:save = winsaveview()
   " Remove trailing whitespace
-  %s/\v(|)/\r/e
+  %s/\v(|
+)/\r/e
   %s///e
   " Move cursor to original position
   call winrestview(l:save)
@@ -343,18 +344,25 @@ fun! ContractHL7()
   let l:save = winsaveview()
   " Remove trailing whitespace
   g/^$/d
-  %s/\v\n/\/e
+  %s/\v\n/\
+/e
   %s/\vMSH/MSH/e
   %s/\v^MSH/MSH/e
-  %s/\vMSH/\\MSH/e
-  %s/\v$/\\
+  %s/\v
+MSH/\
+\
+MSH/e
+  %s/\v
+$/\
+\
   " Move cursor to original position
   call winrestview(l:save)
 endfun
 
 augroup hl7
   " add do/end as jumps for %
-  " autocmd FileType hl7 nmap <buffer> <C-h>e :%s/\v(|)/\r<CR>
+  " autocmd FileType hl7 nmap <buffer> <C-h>e :%s/\v(|
+)/\r<CR>
   " autocmd FileType hl7 nnoremap <C-h>e echom "called"
   autocmd FileType hl7 nnoremap <silent> <C-h><C-h> :call HL7Toggle()<CR>
 augroup end

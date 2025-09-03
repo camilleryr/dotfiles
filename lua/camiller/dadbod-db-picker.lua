@@ -5,7 +5,7 @@ local finders = require "telescope.finders"
 local conf = require("telescope.config").values
 
 local select_db = function(opts)
-  opts = opts or {}
+  opts = opts or {default_text = vim.fn.fnamemodify(vim.fn.getcwd(), ':t')}
   pickers.new(opts, {
     prompt_title = "colors",
     finder = finders.new_table {
@@ -23,7 +23,6 @@ local select_db = function(opts)
       actions.select_default:replace(function()
         actions.close(prompt_bufnr)
         local selection = action_state.get_selected_entry()
-        print("HERE")
         print(vim.inspect(selection.value))
         vim.g.db = selection.value
       end)

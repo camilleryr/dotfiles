@@ -71,7 +71,7 @@ autocmd("ColorScheme", {
   pattern = "everforest",
   callback = function()
     local highlights = {
-      ["@symbol.elixir"] = { link = "Blue" },
+      ["@module.elxir"] = { fg = "#61afef" },
       ["@constant.elixir"] = { link = "PurpleItalic" },
     }
 
