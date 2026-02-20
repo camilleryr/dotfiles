@@ -1,3 +1,5 @@
+plugins=(tumx)
+ZSH_TMUX_AUTOSTART=false
 # BEGIN DEVBAO MANAGED BLOCK FOR zsh shell completion
 autoload -U +X bashcompinit && bashcompinit
 autoload -U +X compinit && compinit
@@ -43,6 +45,7 @@ alias vim='nvim_term'
 alias v='nvim_term'
 alias nvim_term='nvim -c ":VTerm | wincmd h"'
 # alias m='nvim -c ":terminal matterhorn"'
+# nvim_term -u ~/workspace/camiller.yr/dotfiles/init.lua
 
 alias gs='git status'
 alias ga='git add .'
@@ -137,12 +140,12 @@ export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
 
 export GITHUB_USERNAME=camiller.yr
 # BEGIN DEVBAO MANAGED BLOCK FOR KUBECONFIG ENV VAR
-export KUBECONFIG=$HOME/.kube/config:$(ls -d $HOME/.kube/config.d/* 2> /dev/null | paste -sd : -)
+export KUBECONFIG=$HOME/.kube/config:$(\ls -d $HOME/.kube/config.d/* 2> /dev/null | \paste -sd : -)
 # END DEVBAO MANAGED BLOCK FOR KUBECONFIG ENV VAR
 # BEGIN DEVBAO MANAGED BLOCK for kubectl
-# source <(kubectl completion zsh)
-# alias k=kubectl
-# complete -F __start_kubectl k
+source <(kubectl completion zsh)
+alias k=kubectl
+complete -F __start_kubectl k
 # END DEVBAO MANAGED BLOCK for kubectl
 # BEGIN DEVBAO MANAGED BLOCK FOR KREW
 export PATH="$HOME/.krew/bin:$PATH"

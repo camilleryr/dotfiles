@@ -209,6 +209,26 @@ require("lazy").setup({
     { import = "plugins" },
 })
 
+-- vim.cmd[[set completeopt+=menuone,noselect,popup]]
+-- vim.lsp.start({
+--   name = 'ts_ls',
+--   cmd = …,
+--   on_attach = function(client, bufnr)
+--     vim.lsp.completion.enable(true, client.id, bufnr, {
+--       autotrigger = true,
+--       convert = function(item)
+--         return { abbr = item.label:gsub('%b()', '') }
+--       end,
+--     })
+--   end,
+-- })
+
+vim.lsp.config('postgres_lsp', {
+  root_markers = { '.postgrestools.jsonc', 'postgrestools.jsonc' },
+})
+
+vim.lsp.enable('postgres_lsp')
+
 vim.lsp.enable('expert')
 vim.lsp.enable('lua_ls')
 vim.lsp.enable('jsonls')
