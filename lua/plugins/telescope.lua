@@ -15,6 +15,7 @@ return {
       set('n', '<leader>/', ':Telescope grep_string search=', {})
       set('n', '<leader>b', ':Telescope buffers<cr>', {})
       set('n', '<leader>*', ':Telescope grep_string<cr>', {})
+      set('n', '<leader>ss', ':Telescope spell_suggest<cr>', {})
 
       require('telescope').setup{
         defaults = {

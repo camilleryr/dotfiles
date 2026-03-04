@@ -1,9 +1,5 @@
 plugins=(tumx)
 ZSH_TMUX_AUTOSTART=false
-# BEGIN DEVBAO MANAGED BLOCK FOR zsh shell completion
-autoload -U +X bashcompinit && bashcompinit
-autoload -U +X compinit && compinit
-# END DEVBAO MANAGED BLOCK FOR zsh shell completion
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
 # Initialization code that may require console input (password prompts, [y/n]
 # confirmations, etc.) must go above this block; everything else may go below.
@@ -119,62 +115,27 @@ if command -v pyenv 1>/dev/null 2>&1; then
   eval "$(pyenv init -)"
 fi
 
-export PATH="${ASDF_DATA_DIR:-$HOME/.asdf}/shims:$PATH"
-# . "$HOME/.asdf/asdf.sh"
-
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 [[ ! -f ~/.secret.zsh ]] || source ~/.secret.zsh
 
-. $(brew --prefix)/etc/profile.d/z.sh
-source $(brew --prefix)/opt/powerlevel10k/powerlevel10k.zsh-theme
-
-
-PATH="/Library/Frameworks/Python.framework/Versions/Current/bin:${PATH}"
-export PATH
-# BEGIN DEVBAO MANAGED BLOCK FOR user's local bin
-export PATH="$HOME/.local/bin:$PATH"
-# END DEVBAO MANAGED BLOCK FOR user's local bin
-export OKTA_USERNAME=cmiller
-export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
+# . $(brew --prefix)/etc/profile.d/z.sh
+source $(brew --prefix)/share/powerlevel10k/powerlevel10k.zsh-theme
 
 export GITHUB_USERNAME=camiller.yr
-# BEGIN DEVBAO MANAGED BLOCK FOR KUBECONFIG ENV VAR
-export KUBECONFIG=$HOME/.kube/config:$(\ls -d $HOME/.kube/config.d/* 2> /dev/null | \paste -sd : -)
-# END DEVBAO MANAGED BLOCK FOR KUBECONFIG ENV VAR
-# BEGIN DEVBAO MANAGED BLOCK for kubectl
-source <(kubectl completion zsh)
-alias k=kubectl
-complete -F __start_kubectl k
-# END DEVBAO MANAGED BLOCK for kubectl
-# BEGIN DEVBAO MANAGED BLOCK FOR KREW
-export PATH="$HOME/.krew/bin:$PATH"
-# END DEVBAO MANAGED BLOCK FOR KREW
-# BEGIN DEVBAO MANAGED BLOCK for Valet
-export VALET_USERNAME=cmiller
-# END DEVBAO MANAGED BLOCK for Valet
 
-export PATH="/opt/homebrew/opt/postgresql@15/bin:$PATH"
-# BEGIN DEVBAO MANAGED BLOCK FOR adrise_infrastructure
-export INFRA_REPO_DIR=/Users/cmiller/tubi/infrastructure
-# END DEVBAO MANAGED BLOCK FOR adrise_infrastructure
-#
 export NVM_DIR="$HOME/.nvm"
 [ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"  # This loads nvm
 [ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
 
-# >>> conda initialize >>>
-# !! Contents within this block are managed by 'conda init' !!
-__conda_setup="$('/opt/homebrew/Caskroom/miniforge/base/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
-if [ $? -eq 0 ]; then
-    eval "$__conda_setup"
-else
-    if [ -f "/opt/homebrew/Caskroom/miniforge/base/etc/profile.d/conda.sh" ]; then
-        . "/opt/homebrew/Caskroom/miniforge/base/etc/profile.d/conda.sh"
-    else
-        export PATH="/opt/homebrew/Caskroom/miniforge/base/bin:$PATH"
-    fi
-fi
-unset __conda_setup
-# <<< conda initialize <<<
 
+# mise version manager
+eval "$(mise activate zsh)"
+
+# PostgreSQL 18 (keg-only, not symlinked into /opt/homebrew/bin)
+export PATH="/opt/homebrew/opt/postgresql@18/bin:$PATH"
+
+export PATH="/Users/cmiller/workspace/camiller.yr/executables:$PATH"
+
+compinit
+eval "$(zoxide init zsh)"

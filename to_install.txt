@@ -1,0 +1,14 @@
+# things that need to be installed
+karibeaner
+
+gh
+--cask rectangle
+powerlevel10k
+neovim
+cmake
+ripgrep
+nvr
+vscode-langservers-extracted
+lua-language-server
+postgres-language-server
+cspell
