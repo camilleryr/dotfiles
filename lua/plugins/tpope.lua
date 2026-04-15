@@ -11,6 +11,8 @@ return {
       set('n', '<leader>gb', ':Telescope git_branches<cr>', {})
     end
   },
+  'sindrets/diffview.nvim',
+  'jecaro/fugitive-difftool.nvim',
   'tpope/vim-rhubarb',
   'tpope/vim-fireplace',
   'tpope/vim-dispatch',

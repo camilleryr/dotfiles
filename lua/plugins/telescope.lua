@@ -5,13 +5,14 @@ return {
       {'nvim-telescope/telescope-fzf-native.nvim', build = 'cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release'},
       "debugloop/telescope-undo.nvim",
       'nvim-telescope/telescope-github.nvim',
-      'nvim-telescope/telescope-live-grep-args.nvim'
+      'nvim-telescope/telescope-live-grep-args.nvim',
+      'paopaol/telescope-git-diffs.nvim'
     },
     config = function()
       local set = vim.keymap.set
       local actions = require("telescope.actions")
       -- super search
-      set('n', '<leader>f', ':Telescope find_files<cr>', {})
+      set('n', '<leader>f', ':lua require("telescope.builtin").find_files({search_dirs = {"-g", "!apps/poc-landon/"}}) <cr>', {})
       set('n', '<leader>/', ':Telescope grep_string search=', {})
       set('n', '<leader>b', ':Telescope buffers<cr>', {})
       set('n', '<leader>*', ':Telescope grep_string<cr>', {})
@@ -101,6 +102,7 @@ return {
       require('telescope').load_extension('fzf')
       require("telescope").load_extension('live_grep_args')
       require("telescope").load_extension('undo')
+      require('telescope').load_extension('git_diffs')
 
       local lga_actions = require("telescope-live-grep-args.actions")
 
